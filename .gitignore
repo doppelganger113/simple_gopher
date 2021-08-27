@@ -1,10 +1,7 @@
 bin
-Dockerfile
 .git
-.gitignore
 .idea
 .DS_Store
-README.md
 c.out
 .env
 *.iml
