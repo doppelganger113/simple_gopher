@@ -1,0 +1,67 @@
+package image_resize
+
+import (
+	"context"
+	"github.com/stretchr/testify/mock"
+	"mime/multipart"
+)
+
+type ResizeApiMock struct {
+	mock.Mock
+}
+
+func (resize *ResizeApiMock) FetchSignedUrl(
+	ctx context.Context, authorization string, format ImageFormat,
+) (*SignedResponse, error) {
+	args := resize.Called(ctx, authorization, format)
+
+	return args.Get(0).(*SignedResponse), args.Error(1)
+}
+
+func (resize *ResizeApiMock) UploadFile(
+	ctx context.Context,
+	signedUrl string,
+	format ImageFormat,
+	fileHeader *multipart.FileHeader,
+) error {
+	args := resize.Called(ctx, signedUrl, format, fileHeader)
+
+	return args.Error(0)
+}
+
+func (resize *ResizeApiMock) Resize(
+	ctx context.Context, authorizationHeader string, imageResizeRequest ImageResizeRequest,
+) (*ImageResizeResponse, error) {
+	args := resize.Called(ctx, authorizationHeader, imageResizeRequest)
+
+	return args.Get(0).(*ImageResizeResponse), args.Error(1)
+}
+
+func (resize *ResizeApiMock) Invalidate(
+	ctx context.Context,
+	authorizationHeader string,
+	request ImageDeleteRequest,
+) error {
+	args := resize.Called(ctx, authorizationHeader, request)
+
+	return args.Error(0)
+}
+
+func (resize *ResizeApiMock) Rename(
+	ctx context.Context,
+	authorizationHeader string,
+	request ImageRenameRequest,
+) (ImageResizeResponse, error) {
+	args := resize.Called(ctx, authorizationHeader, request)
+
+	return args.Get(0).(ImageResizeResponse), args.Error(1)
+}
+func (resize *ResizeApiMock) Delete(
+	ctx context.Context,
+	authorizationHeader string,
+	request ImageDeleteRequest,
+) error {
+	args := resize.Called(ctx, authorizationHeader, request)
+
+	return args.Error(0)
+}

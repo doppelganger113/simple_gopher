@@ -1,0 +1,47 @@
+image: golang:1.16
+
+services:
+  - postgres:12
+
+variables:
+  POSTGRES_DB: nice_marmot
+  POSTGRES_USER: runner
+  POSTGRES_PASSWORD: example
+
+.go-cache:
+  variables:
+    GOPATH: $CI_PROJECT_DIR/.go
+  before_script:
+    - mkdir -p .go
+  cache:
+    paths:
+      - .go/pkg/mod/
+stages:
+  - test
+  - deploy
+
+tests:
+  stage: test
+  extends: .go-cache
+  script:
+    - make
+    - make migrate_up
+    - make test
+  variables:
+    DATABASE_TEST_URL: "postgres://runner:example@postgres:5432/nice_marmot?sslmode=disable"
+    DATABASE_URL: "postgres://runner:example@postgres:5432/nice_marmot?sslmode=disable"
+    ENVIRONMENT: test
+    TEST_INTEGRATION: "true"
+    SQS_POST_AUTH_CONSUMER_DISABLED: "true"
+    # Other variables are used through GitLab secrets
+
+deployment:
+  image: ruby:latest
+  only:
+    - master
+  stage: deploy
+  script:
+    - apt-get update -qy
+    - apt-get install -y ruby-dev
+    - gem install dpl
+    - dpl --provider=heroku --app=$HEROKU_APP_NAME --api-key=$HEROKU_API_KEY
