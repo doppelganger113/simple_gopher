@@ -1,4 +1,4 @@
-image: golang:1.16
+image: golang:1.17
 
 services:
   - postgres:12
@@ -25,6 +25,7 @@ tests:
   extends: .go-cache
   script:
     - make
+    - make vet
     - make migrate_up
     - make test
   variables:

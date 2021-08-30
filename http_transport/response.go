@@ -21,3 +21,7 @@ func respondJson(w http.ResponseWriter, statusCode int, data interface{}) {
 		_, _ = w.Write([]byte(""))
 	}
 }
+
+func respondBadRequestJson(w http.ResponseWriter, err error) {
+	respondJson(w, http.StatusBadRequest, newFailureResponse(err.Error()))
+}

@@ -6,19 +6,21 @@ import (
 	"mime/multipart"
 )
 
-type ResizeApiMock struct {
+type Mock struct {
 	mock.Mock
 }
 
-func (resize *ResizeApiMock) FetchSignedUrl(
-	ctx context.Context, authorization string, format ImageFormat,
+func (resize *Mock) FetchSignedUrl(
+	ctx context.Context,
+	authorization string,
+	format ImageFormat,
 ) (*SignedResponse, error) {
 	args := resize.Called(ctx, authorization, format)
 
 	return args.Get(0).(*SignedResponse), args.Error(1)
 }
 
-func (resize *ResizeApiMock) UploadFile(
+func (resize *Mock) UploadFile(
 	ctx context.Context,
 	signedUrl string,
 	format ImageFormat,
@@ -29,15 +31,15 @@ func (resize *ResizeApiMock) UploadFile(
 	return args.Error(0)
 }
 
-func (resize *ResizeApiMock) Resize(
+func (resize *Mock) Resize(
 	ctx context.Context, authorizationHeader string, imageResizeRequest ImageResizeRequest,
-) (*ImageResizeResponse, error) {
+) (ImageResizeResponse, error) {
 	args := resize.Called(ctx, authorizationHeader, imageResizeRequest)
 
-	return args.Get(0).(*ImageResizeResponse), args.Error(1)
+	return args.Get(0).(ImageResizeResponse), args.Error(1)
 }
 
-func (resize *ResizeApiMock) Invalidate(
+func (resize *Mock) Invalidate(
 	ctx context.Context,
 	authorizationHeader string,
 	request ImageDeleteRequest,
@@ -47,7 +49,7 @@ func (resize *ResizeApiMock) Invalidate(
 	return args.Error(0)
 }
 
-func (resize *ResizeApiMock) Rename(
+func (resize *Mock) Rename(
 	ctx context.Context,
 	authorizationHeader string,
 	request ImageRenameRequest,
@@ -56,7 +58,7 @@ func (resize *ResizeApiMock) Rename(
 
 	return args.Get(0).(ImageResizeResponse), args.Error(1)
 }
-func (resize *ResizeApiMock) Delete(
+func (resize *Mock) Delete(
 	ctx context.Context,
 	authorizationHeader string,
 	request ImageDeleteRequest,

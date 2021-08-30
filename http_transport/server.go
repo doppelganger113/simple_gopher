@@ -8,12 +8,12 @@ import (
 	"github.com/go-chi/cors"
 	"github.com/rs/zerolog/log"
 	"net/http"
-	simple_gopher "simple_gopher"
+	"simple_gopher"
 	"time"
 )
 
 type Server struct {
-	app        *simple_gopher.App
+	Port       uint
 	router     *chi.Mux
 	httpServer *http.Server
 }
@@ -50,6 +50,7 @@ func NewServer(
 		return nil, err
 	}
 	r.Route("/docs", swaggerRouter)
+	r.Route("/api/v1/images", ImagesRouter(app.ImagesService, app.Auth))
 
 	httpServer := &http.Server{
 		Addr:              port,
@@ -61,14 +62,14 @@ func NewServer(
 	}
 
 	return &Server{
-		app:        app,
 		router:     r,
 		httpServer: httpServer,
+		Port:       app.Config.PORT,
 	}, nil
 }
 
 func (s *Server) StartAndListen() error {
-	log.Info().Msgf("Server started on port :%d", s.app.Config.PORT)
+	log.Info().Msgf("Server started on port :%d", s.Port)
 	if err := s.httpServer.ListenAndServe(); err != nil {
 		return err
 	}

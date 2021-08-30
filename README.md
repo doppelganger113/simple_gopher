@@ -1,10 +1,13 @@
 # Simple Gopher
 
-Boilerplate for writing Go web applications.
+Boilerplate for writing Go applications without framework using hexagonal application development approach.
 
 <div align="center">
     <img src="./assets/go_logo.png" align="center" width="200" alt="Go" />
 </div>
+
+Information about the project structure and why is it the wat it is can be found in [ARCHITECTURE.MD](./ARCHITECTURE.md)
+.
 
 Table of contents
 =================
@@ -64,7 +67,7 @@ Configuration of the application is done through the environment variables, whic
 
 ### Development requirements
 
-- Go v1.16+
+- Go v1.17
 - PostgreSQL
 - Docker and docker-compose
 
@@ -74,7 +77,8 @@ execute `aws configure --profile your-profile` then `export AWS_PROFILE=your-pro
 ### Running locally
 
 1. Set the environment variables. It's also recommended storing them in `.env` file which is ignored for ease of
-   management. Then load the env variables with `source .env`
+   management. Export variables in each row like `export MY_VARIABLE=1234`, then load the env variables
+   with `source .env`
 2. Ensure that you start the database and all the other required services by running:
    `docker-compose up -d`
 3. After setting the environment variables, execute the `make start` command to build and start the server
@@ -91,10 +95,11 @@ execute `aws configure --profile your-profile` then `export AWS_PROFILE=your-pro
 Golang implementation of [OpenApi3 specification](https://swagger.io/docs/specification/basic-structure/) aka Swagger
 through dynamic configuration with Swagger UI.
 
-We use Swagger-UI with some small changes in order for it to fetch changes from our API where we can set the
-redirection url for OAuth2.
+We use Swagger-UI with some small changes in order for it to fetch changes from our API where we can set the redirection
+url for OAuth2.
 
 **Dependencies**
+
 - github.com/getkin/kin-openapi/openapi3
 - github.com/getkin/kin-openapi/openapi3gen
 
@@ -106,6 +111,7 @@ Documentation is added/updated in `src/api/http-transport/openapi3.go`, served v
 ### Test configuration
 
 Ensure that you set the `DATABASE_TEST_URL` environment variable, reason for new one is for safety reasons.
+
 ```bash
 export DATABASE_TEST_URL=postgresql://postgres:example@localhost/db?sslmode=disable
 
@@ -122,7 +128,15 @@ export SQS_POST_AUTH_CONSUMER_DISABLED=true
 Unit testing **with** integration testing
 
 - `export TEST_INTEGRATION=true`
-- `make test`
+- `make verify`
+
+### Vetting
+
+Go provides a great tool for checking out code and detecting possible bugs, think of it as a linter. To run it execute:
+
+```bash
+make vet
+```
 
 ### Testing in CI/CD
 
@@ -168,7 +182,7 @@ CI/CD is currently on the Heroku and additional options that were added for it a
 1. Build phase
 
 ```text
-// +heroku goVersion 1.16
+// +heroku goVersion 1.17
 // +heroku install ./cmd/...
 ```
 
@@ -197,14 +211,13 @@ More about Heroku options can be found at the
    ```bash
    sudo chmod -R 777 /usr/local/go
    ```
-- New to Makefile? There's plenty of learning examples [here](https://makefiletutorial.com/)
 - How to clear test cache? Execute `go clean -testcache`
-
 
 ## Helpful materials
 
 - [Go cheat sheet](https://devhints.io/go)
+- [Learn Go with tests](https://quii.gitbook.io/learn-go-with-tests/)
+- [Go by example](https://gobyexample.com/)
+- [Effective Go](https://golang.org/doc/effective_go)
+- [Makefile tutorial](https://makefiletutorial.com/)
 
-## Useful libraries
-
-- https://github.com/golang-migrate/migrate

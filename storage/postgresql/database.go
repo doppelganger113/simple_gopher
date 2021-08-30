@@ -20,12 +20,12 @@ func NewDatabase() *Database {
 // Connect method connects the database where the connection url is in format:
 // "postgresql://postgres:example@localhost/dbname"
 func (db *Database) Connect(ctx context.Context, connectionString string) error {
-	log.Info().Msg("Trying to connect to the database")
+	log.Info().Msg("[Database]: Trying to connect...")
 
-	retry := cloud_patterns.NewRetry(3 * time.Second)
+	retry := cloud_patterns.NewRetry(3, 3*time.Second)
 	err := retry.Execute(ctx, func(ctx context.Context, retryCount uint) error {
 		if retryCount > 0 {
-			log.Info().Msgf("Retrying connection %d time", retryCount)
+			log.Info().Msgf("[Database]: Retrying connection %d", retryCount)
 		}
 
 		dbpool, err := pgxpool.Connect(context.Background(), connectionString)
@@ -37,15 +37,15 @@ func (db *Database) Connect(ctx context.Context, connectionString string) error 
 		return nil
 	})
 	if err != nil {
-		return errors.New("failed to connect")
+		return errors.New("[Database]: failed to connect")
 	}
 
-	log.Info().Msg("Connected to the database")
+	log.Info().Msg("[Database]: connected")
 
 	return nil
 }
 
 func (db *Database) Close() {
-	log.Info().Msg("Closing database connection.")
+	log.Info().Msg("[Database]: Closing connection.")
 	db.dbPool.Close()
 }

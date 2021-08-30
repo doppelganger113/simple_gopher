@@ -1,17 +1,18 @@
 package storage
 
 import (
+	"context"
 	"github.com/stretchr/testify/mock"
 )
 
-type StorageMock struct {
+type Mock struct {
 	mock.Mock
 }
 
-func (sm *StorageMock) Connect(connectionUrl string) error {
-	args := sm.Called(connectionUrl)
+func (sm *Mock) Connect(ctx context.Context, connectionUrl string) error {
+	args := sm.Called(ctx, connectionUrl)
 	return args.Error(0)
 }
 
-func (sm *StorageMock) Close() {
+func (sm *Mock) Close() {
 }
