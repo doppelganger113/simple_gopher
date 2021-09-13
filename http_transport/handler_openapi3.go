@@ -3,10 +3,9 @@ package http_transport
 import (
 	"github.com/go-chi/chi/v5"
 	"net/http"
-	"simple_gopher"
 )
 
-func openApi3Router(config simple_gopher.Config) (func(router chi.Router), error) {
+func openApi3Router(config Config) (func(router chi.Router), error) {
 	basicAuth := newBasicAuth(config.BasicAuthUsername, config.BasicAuthPassword, config.BasicAuthRealm)
 
 	swaggerJson, err := newOpenApi3(OpenApi3Config{

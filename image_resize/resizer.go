@@ -10,7 +10,7 @@ type Resizer interface {
 		ctx context.Context,
 		authorization string,
 		format ImageFormat,
-	) (*SignedResponse, error)
+	) (SignedResponse, error)
 	UploadFile(
 		ctx context.Context,
 		signedUrl string,

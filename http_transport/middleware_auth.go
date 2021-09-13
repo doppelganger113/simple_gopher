@@ -14,12 +14,8 @@ var (
 
 type Middleware func(next http.HandlerFunc) http.HandlerFunc
 
-type TokenValidator interface {
-	IsTokenValid(ctx context.Context, tokenString string, requiredGroup auth.Role) (bool, string, error)
-}
-
 func Authorize(
-	next http.HandlerFunc, validator TokenValidator, group auth.Role,
+	next http.HandlerFunc, validator Authenticator, group auth.Role,
 ) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")

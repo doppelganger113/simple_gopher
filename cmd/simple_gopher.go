@@ -7,8 +7,8 @@ import (
 	"github.com/rs/zerolog/log"
 	"os"
 	"os/signal"
-	"simple_gopher"
 	"simple_gopher/http_transport"
+	"simple_gopher/simple_gopher"
 	"syscall"
 	"time"
 )
@@ -27,7 +27,6 @@ func main() {
 	log.Info().Msg("Starting api...")
 
 	errChannel := make(chan error)
-	var server *http_transport.Server
 
 	app, buildErr := simple_gopher.InitializeApp()
 	if buildErr != nil {
@@ -40,20 +39,18 @@ func main() {
 	defer appInitCancel()
 	err := app.Init(appInitTimeout, appCtx)
 	if err != nil {
-		log.Fatal().Msg(err.Error())
+		log.Fatal().Msgf("failed initializing app: %s", err.Error())
 		return
 	}
 
-	go func() {
-		newServer, serverErr := http_transport.NewServer(app)
-		server = newServer
-
-		if serverErr != nil {
-			errChannel <- serverErr
-		} else {
-			errChannel <- server.StartAndListen()
-		}
-	}()
+	server, err := http_transport.StartNewConfiguredAndListenChannel(http_transport.Handlers{
+		ImagesHandler: app.ImagesService,
+		Authenticator: app.Auth,
+	}, errChannel)
+	if err != nil {
+		log.Fatal().Msgf("failed starting the server: %s", err.Error())
+		return
+	}
 	go listenForInterrupt(errChannel)
 
 	fatalErr := <-errChannel

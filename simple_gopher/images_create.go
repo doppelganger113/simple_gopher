@@ -10,15 +10,15 @@ import (
 	"simple_gopher/storage"
 )
 
-func (service *ImagesService) getMultipleSignUrls(
+func (service ImagesService) getMultipleSignUrls(
 	ctx context.Context, authHeader string, format image_resize.ImageFormat,
 ) (
-	*image_resize.SignedResponse,
-	*image_resize.SignedResponse,
+	image_resize.SignedResponse,
+	image_resize.SignedResponse,
 	error,
 ) {
-	var firstRes *image_resize.SignedResponse
-	var secondRes *image_resize.SignedResponse
+	var firstRes image_resize.SignedResponse
+	var secondRes image_resize.SignedResponse
 
 	g := new(errgroup.Group)
 
@@ -40,13 +40,15 @@ func (service *ImagesService) getMultipleSignUrls(
 
 	err := g.Wait()
 	if err != nil {
-		return nil, nil, err
+		return image_resize.SignedResponse{},
+			image_resize.SignedResponse{},
+			err
 	}
 
 	return firstRes, secondRes, nil
 }
 
-func (service *ImagesService) uploadBothFiles(
+func (service ImagesService) uploadBothFiles(
 	ctx context.Context,
 	originalSignedUrl string,
 	croppedSignedUrl string,
@@ -69,41 +71,41 @@ func (service *ImagesService) uploadBothFiles(
 	return err
 }
 
-func (service *ImagesService) UploadAndResize(
+func (service ImagesService) UploadAndResize(
 	ctx context.Context,
 	authorization auth.AuthorizationDto,
 	imageName string,
 	format image_resize.ImageFormat,
 	originalFile *multipart.FileHeader,
 	croppedFile *multipart.FileHeader,
-) (*storage.Image, error) {
+) (storage.Image, error) {
 	seoImageName := FormatForSeo(imageName)
 	if seoImageName == "" {
-		return nil, InvalidArgument{
+		return storage.Image{}, InvalidArgument{
 			Reason: fmt.Sprintf("Invalid image name of %s", imageName),
 		}
 	}
 
 	currentUser, err := service.authenticator.GetOrSyncUser(ctx, authorization)
 	if err != nil {
-		return nil, err
+		return storage.Image{}, err
 	}
 
 	isNameTaken, err := service.imagesRepository.DoesImageExist(ctx, seoImageName)
 	if err != nil {
-		return nil, InvalidArgument{
+		return storage.Image{}, InvalidArgument{
 			Reason: fmt.Sprintf("Image '%s' already exists", seoImageName),
 		}
 	}
 	if isNameTaken {
-		return nil, InvalidArgument{
+		return storage.Image{}, InvalidArgument{
 			Reason: fmt.Sprintf("Image name: '%s' already exists, please use another", seoImageName),
 		}
 	}
 
 	originalSigned, croppedSigned, err := service.getMultipleSignUrls(ctx, authorization.Header, format)
 	if err != nil {
-		return nil,
+		return storage.Image{},
 			fmt.Errorf("error creating multiple sign urls: %w", err)
 	}
 
@@ -116,7 +118,7 @@ func (service *ImagesService) UploadAndResize(
 		croppedFile,
 	)
 	if err != nil {
-		return nil, fmt.Errorf("error uploading files: %w", err)
+		return storage.Image{}, fmt.Errorf("error uploading files: %w", err)
 	}
 
 	resizeRequest := image_resize.ImageResizeRequest{
@@ -126,7 +128,7 @@ func (service *ImagesService) UploadAndResize(
 	}
 	res, err := service.resizeApi.Resize(ctx, authorization.Header, resizeRequest)
 	if err != nil {
-		return nil, fmt.Errorf("error resizing: %w", err)
+		return storage.Image{}, fmt.Errorf("error resizing: %w", err)
 	}
 
 	newImage := storage.Image{
@@ -141,7 +143,7 @@ func (service *ImagesService) UploadAndResize(
 
 	createdImg, err := service.imagesRepository.Create(ctx, newImage)
 	if err != nil {
-		return nil, fmt.Errorf("err saving new image to database: %w", err)
+		return storage.Image{}, fmt.Errorf("err saving new image to database: %w", err)
 	}
 
 	return createdImg, nil

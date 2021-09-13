@@ -14,7 +14,10 @@ func respondJson(w http.ResponseWriter, statusCode int, data interface{}) {
 		if err := json.NewEncoder(w).Encode(data); err != nil {
 			log.Error().Interface("data", data).Msg("error parsing err response")
 			w.WriteHeader(http.StatusInternalServerError)
-			_, _ = w.Write([]byte(`{"err": "Error parsing err response"}`))
+			_, err = w.Write([]byte(`{"err": "Error parsing err response"}`))
+			if err != nil {
+				log.Error().Err(err).Msg("error writing err response")
+			}
 			return
 		}
 	} else {

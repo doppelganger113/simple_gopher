@@ -2,58 +2,72 @@ package storage
 
 import (
 	"context"
-	"github.com/stretchr/testify/mock"
 )
 
 type ImageRepoMock struct {
-	mock.Mock
 }
 
-func (repo *ImageRepoMock) Get(
-	ctx context.Context, page, size int, order Order,
+func (repo ImageRepoMock) Get(
+	_ context.Context, _, _ int, _ Order,
 ) (ImageList, error) {
-	args := repo.Called(ctx, page, size, order)
+	images := ImageList{
+		{
+			Id:       "3c47d736-6c4e-4a1c-a04b-3744cc30b263",
+			Name:     "my-image-1",
+			Format:   "jpg",
+			Original: "images/my-unique-image.png",
+			Domain:   "https://random.cloudfront.net",
+			Path:     "images",
+			Sizes: ImageSizes{
+				Original: Dimensions{
+					Width:  688,
+					Height: 516,
+				},
+				Xs: &Dimensions{
+					Width:  100,
+					Height: 75,
+				},
+				S: &Dimensions{
+					Width:  300,
+					Height: 225,
+				},
+				M: &Dimensions{
+					Width:  500,
+					Height: 375,
+				},
+			},
+			CreatedAt: nil,
+			UpdatedAt: nil,
+		},
+	}
 
-	return args.Get(0).(ImageList), args.Error(1)
+	return images, nil
 }
 
-func (repo *ImageRepoMock) GetOne(ctx context.Context, imageId string) (*Image, error) {
-	args := repo.Called(ctx, imageId)
-
-	return args.Get(0).(*Image), args.Error(1)
+func (repo ImageRepoMock) GetOne(_ context.Context, _ string) (Image, error) {
+	return Image{}, nil
 }
 
-func (repo *ImageRepoMock) GetOneByName(ctx context.Context, name string) (Image, error) {
-	args := repo.Called(ctx, name)
-
-	return args.Get(0).(Image), args.Error(1)
+func (repo ImageRepoMock) GetOneByName(_ context.Context, _ string) (Image, error) {
+	return Image{}, nil
 }
 
-func (repo *ImageRepoMock) DoesImageExist(ctx context.Context, name string) (bool, error) {
-	args := repo.Called(ctx, name)
-	return args.Bool(0), args.Error(1)
+func (repo ImageRepoMock) DoesImageExist(_ context.Context, _ string) (bool, error) {
+	return false, nil
 }
 
-func (repo *ImageRepoMock) Create(ctx context.Context, newImage Image) (*Image, error) {
-	args := repo.Called(ctx, newImage)
-
-	return args.Get(0).(*Image), args.Error(1)
+func (repo ImageRepoMock) Create(_ context.Context, _ Image) (Image, error) {
+	return Image{}, nil
 }
 
-func (repo *ImageRepoMock) SetNameById(ctx context.Context, imageId, newName string) (Image, error) {
-	args := repo.Called(ctx, imageId, newName)
-
-	return args.Get(0).(Image), args.Error(1)
+func (repo ImageRepoMock) SetNameById(_ context.Context, _, _ string) (Image, error) {
+	return Image{}, nil
 }
 
-func (repo *ImageRepoMock) UpdateOne(ctx context.Context, updates Image) error {
-	args := repo.Called(ctx, updates)
-
-	return args.Error(0)
+func (repo ImageRepoMock) UpdateOne(_ context.Context, _ Image) error {
+	return nil
 }
 
-func (repo *ImageRepoMock) DeleteOne(ctx context.Context, imageId string) error {
-	args := repo.Called(ctx, imageId)
-
-	return args.Error(0)
+func (repo ImageRepoMock) DeleteOne(_ context.Context, _ string) error {
+	return nil
 }

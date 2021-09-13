@@ -122,17 +122,17 @@ func (authService *AuthService) IsTokenValid(
 
 func (authService *AuthService) GetUserAttributes(
 	ctx context.Context, username string,
-) (*auth.UserAttributes, error) {
+) (auth.UserAttributes, error) {
 	requestData := &cognitoidentityprovider.AdminGetUserInput{
 		UserPoolId: &authService.UserPoolId,
 		Username:   &username,
 	}
 	output, err := authService.client.AdminGetUserWithContext(ctx, requestData)
 	if err != nil {
-		return nil, err
+		return auth.UserAttributes{}, err
 	}
 
-	return &auth.UserAttributes{
+	return auth.UserAttributes{
 		Username: *output.Username,
 		Sub:      findAttributeValueByName(output.UserAttributes, "sub"),
 		Name:     findAttributeValueByName(output.UserAttributes, "name"),
@@ -142,7 +142,7 @@ func (authService *AuthService) GetUserAttributes(
 
 func (authService *AuthService) GetOrSyncUser(
 	ctx context.Context, authorization auth.AuthorizationDto,
-) (*storage.User, error) {
+) (storage.User, error) {
 	user, err := authService.userStorage.GetByUsername(ctx, authorization.Username)
 	if err == nil {
 		return user, nil
@@ -150,7 +150,7 @@ func (authService *AuthService) GetOrSyncUser(
 
 	attr, err := authService.GetUserAttributes(ctx, authorization.Username)
 	if err != nil {
-		return nil, err
+		return storage.User{}, err
 	}
 
 	newUser := storage.UserCreationDto{
@@ -164,7 +164,7 @@ func (authService *AuthService) GetOrSyncUser(
 
 	savedUser, err := authService.userStorage.Create(ctx, newUser)
 	if err != nil {
-		return nil, err
+		return storage.User{}, err
 	}
 
 	return savedUser, nil

@@ -5,16 +5,16 @@ GOBASE=$(shell pwd)
 GOBIN=bin
 
 default:
-	go build -i -v -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go || exit
+	go build -i -v -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME).go || exit
 
 install:
 	go mod download
 
 production:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go
+	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME).go
 
 start:
-	go build -i -v -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go|| exit
+	go build -i -v -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME).go|| exit
 	$(GOBIN)/$(PROJECTNAME) || exit
 
 verify:
@@ -33,14 +33,14 @@ migrations:
 	go build -i -v -o $(GOBIN)/migrations ./cmd/migrations/main.go || exit
 
 migrate_up:
-	go run ./cmd/migrations/main.go
+	go run ./cmd/migrate.go
 
 migrate_up_step:
-	go run ./cmd/migrations/main.go -steps 1
+	go run ./cmd/migrate.go -steps 1
 
 # Migrate down by step is safer!
 migrate_down:
-	go run ./cmd/migrations/main.go -steps -1
+	go run ./cmd/migrate.go -steps -1
 
 # Tidy up dependencies
 tidy:

@@ -12,11 +12,11 @@ type UserRepo struct {
 	db *Database
 }
 
-func NewUserRepo(db *Database) *UserRepo {
-	return &UserRepo{db: db}
+func NewUserRepo(db *Database) UserRepo {
+	return UserRepo{db: db}
 }
 
-func (repo *UserRepo) GetByUsername(ctx context.Context, username string) (*storage.User, error) {
+func (repo UserRepo) GetByUsername(ctx context.Context, username string) (storage.User, error) {
 	query := `SELECT id, email, role, cog_username, cog_sub, cog_name, created_at, updated_at, disabled
 FROM users WHERE cog_username=$1 LIMIT 1 
 `
@@ -35,15 +35,15 @@ FROM users WHERE cog_username=$1 LIMIT 1
 		)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			return nil, storage.NotFound{Msg: "User not found by username " + username}
+			return storage.User{}, storage.NotFound{Msg: "User not found by username " + username}
 		}
-		return nil, err
+		return storage.User{}, err
 	}
 
-	return &user, nil
+	return user, nil
 }
 
-func (repo *UserRepo) Create(ctx context.Context, dto storage.UserCreationDto) (*storage.User, error) {
+func (repo UserRepo) Create(ctx context.Context, dto storage.UserCreationDto) (storage.User, error) {
 	query := `INSERT INTO users
 ("email", "role", "cog_username", "cog_sub", "cog_name", "disabled")
 VALUES ($1, $2, $3, $4, $5, $6)
@@ -74,15 +74,15 @@ RETURNING id, email, role, cog_username, cog_sub, cog_name, created_at, updated_
 		)
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate") {
-			return nil, storage.DuplicateErr
+			return storage.User{}, storage.DuplicateErr
 		}
-		return nil, err
+		return storage.User{}, err
 	}
 
-	return &user, nil
+	return user, nil
 }
 
-func (repo *UserRepo) InsertMany(ctx context.Context, users storage.UserList) (count int64, err error) {
+func (repo UserRepo) InsertMany(ctx context.Context, users storage.UserList) (count int64, err error) {
 	count, err = repo.db.dbPool.CopyFrom(
 		ctx,
 		pgx.Identifier{"users"},
@@ -105,7 +105,7 @@ func (repo *UserRepo) InsertMany(ctx context.Context, users storage.UserList) (c
 	return
 }
 
-func (repo *UserRepo) DeleteAll(ctx context.Context) (rowsAffected int64, err error) {
+func (repo UserRepo) DeleteAll(ctx context.Context) (rowsAffected int64, err error) {
 	query := "DELETE FROM users"
 	cmdTag, err := repo.db.dbPool.Exec(ctx, query)
 	if err != nil {

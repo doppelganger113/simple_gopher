@@ -1,10 +1,8 @@
 package http_transport
 
 import (
-	"context"
 	"fmt"
 	"github.com/go-chi/chi/v5"
-	"mime/multipart"
 	"net/http"
 	"simple_gopher"
 	"simple_gopher/auth"
@@ -14,25 +12,7 @@ import (
 
 const maxBodyLimitBytes = 30 * 1024 * 1024 // 20MB
 
-type ImagesHandler interface {
-	Get(ctx context.Context, limit, offset int, order storage.Order) (storage.ImageList, error)
-	GetOne(ctx context.Context, imageId string) (*storage.Image, error)
-	UploadAndResize(
-		ctx context.Context,
-		authorization auth.AuthorizationDto,
-		imageName string,
-		format image_resize.ImageFormat,
-		originalFile *multipart.FileHeader,
-		croppedFile *multipart.FileHeader,
-	) (*storage.Image, error)
-	DeleteOne(
-		ctx context.Context,
-		auth auth.AuthorizationDto,
-		imageId string,
-	) error
-}
-
-func ImagesRouter(handler ImagesHandler, authenticator TokenValidator) func(chi.Router) {
+func ImagesRouter(handler ImagesHandler, authenticator Authenticator) func(chi.Router) {
 	return func(r chi.Router) {
 		r.Get("/", FetchImages(handler))
 		r.Get("/{imageId}", FetchImage(handler))

@@ -16,8 +16,8 @@ func NewImagesService(
 	resizeApi image_resize.Resizer,
 	imagesRepository storage.ImagesRepository,
 	authenticator auth.Authenticator,
-) *ImagesService {
-	return &ImagesService{
+) ImagesService {
+	return ImagesService{
 		resizeApi:        resizeApi,
 		imagesRepository: imagesRepository,
 		authenticator:    authenticator,

@@ -9,7 +9,7 @@ import (
 	"simple_gopher/image_resize"
 )
 
-func (api *ResizeApi) Invalidate(
+func (api ResizeApi) Invalidate(
 	ctx context.Context,
 	authorizationHeader string,
 	request image_resize.ImageDeleteRequest,

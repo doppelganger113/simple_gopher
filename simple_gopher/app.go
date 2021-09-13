@@ -11,7 +11,7 @@ import (
 
 type App struct {
 	Config        Config
-	ImagesService *ImagesService
+	ImagesService ImagesService
 	Auth          auth.Authenticator
 	storage       storage.Storage
 }
@@ -20,7 +20,7 @@ func NewApp(
 	config Config,
 	storage storage.Storage,
 	auth auth.Authenticator,
-	imagesService *ImagesService,
+	imagesService ImagesService,
 ) *App {
 	return &App{
 		Config:        config,

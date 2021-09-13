@@ -10,14 +10,14 @@ import (
 	"simple_gopher/image_resize"
 )
 
-func (api *ResizeApi) FetchSignedUrl(
+func (api ResizeApi) FetchSignedUrl(
 	ctx context.Context, authorization string, format image_resize.ImageFormat,
-) (*image_resize.SignedResponse, error) {
+) (image_resize.SignedResponse, error) {
 	request := image_resize.SignedRequest{Format: format}
 
 	jsonData, err := json.Marshal(request)
 	if err != nil {
-		return nil, err
+		return image_resize.SignedResponse{}, err
 	}
 
 	reqUrl := api.url("/signed")
@@ -29,7 +29,7 @@ func (api *ResizeApi) FetchSignedUrl(
 		bytes.NewBuffer(jsonData),
 	)
 	if err != nil {
-		return nil, err
+		return image_resize.SignedResponse{}, err
 	}
 
 	req.Header.Add("Authorization", authorization)
@@ -41,7 +41,7 @@ func (api *ResizeApi) FetchSignedUrl(
 		if res != nil {
 			status = res.StatusCode
 		}
-		return nil, &image_resize.BadRequest{
+		return image_resize.SignedResponse{}, &image_resize.BadRequest{
 			RequestError: image_resize.RequestError{
 				Url:        reqUrl,
 				StatusCode: status,
@@ -60,10 +60,10 @@ func (api *ResizeApi) FetchSignedUrl(
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return nil, err
+		return image_resize.SignedResponse{}, err
 	}
 	if isResponseOk(res.StatusCode) == false {
-		return nil, &image_resize.BadRequest{
+		return image_resize.SignedResponse{}, &image_resize.BadRequest{
 			RequestError: image_resize.RequestError{
 				Url:        reqUrl,
 				StatusCode: res.StatusCode,
@@ -78,7 +78,7 @@ func (api *ResizeApi) FetchSignedUrl(
 
 	err = json.Unmarshal(body, &signedResponse)
 	if err != nil {
-		return nil, &image_resize.BadRequest{
+		return image_resize.SignedResponse{}, &image_resize.BadRequest{
 			RequestError: image_resize.RequestError{
 				Url:        reqUrl,
 				StatusCode: res.StatusCode,
@@ -89,5 +89,5 @@ func (api *ResizeApi) FetchSignedUrl(
 		}
 	}
 
-	return &signedResponse, nil
+	return signedResponse, nil
 }

@@ -5,23 +5,13 @@ import (
 	"os"
 	"simple_gopher/auth/cognito"
 	"strconv"
-	"strings"
 )
 
 type Config struct {
-	Domain                      string
-	OAuth2TokenUrl              string
-	OAuth2AuthorizationCodeUrl  string
-	BasicAuthUsername           string
-	BasicAuthPassword           string
-	BasicAuthRealm              string
 	AwsUserPoolId               string
 	AwsRegion                   string
 	DatabaseUrl                 string
 	ImagesApiDomain             string
-	CorsAllowOrigins            []string
-	PORT                        uint
-	DebugRoutes                 bool
 	AwsAccessKeyId              string
 	AwsSecretAccessKey          string
 	SqsPostAuthUrl              string
@@ -36,35 +26,6 @@ func NewConfigFromEnv() (Config, error) {
 }
 
 func (c *Config) LoadFromEnvironment() error {
-	c.Domain = os.Getenv("DOMAIN")
-	if c.Domain == "" {
-		return errors.New("missing env DOMAIN")
-	}
-
-	c.OAuth2TokenUrl = os.Getenv("OAUTH2_TOKEN_URL")
-	if c.OAuth2TokenUrl == "" {
-		return errors.New("missing env OAUTH2_TOKEN_URL")
-	}
-
-	c.OAuth2AuthorizationCodeUrl = os.Getenv("OAUTH_AUTHORIZATION_CODE_URL")
-	if c.OAuth2AuthorizationCodeUrl == "" {
-		return errors.New("missing env OAUTH_AUTHORIZATION_CODE_URL")
-	}
-
-	c.BasicAuthRealm = os.Getenv("BASIC_AUTH_REALM")
-	if c.BasicAuthRealm == "" {
-		c.BasicAuthRealm = "Forbidden"
-	}
-
-	c.BasicAuthUsername = os.Getenv("BASIC_AUTH_USERNAME")
-	if c.BasicAuthUsername == "" {
-		return errors.New("missing env BASIC_AUTH_USERNAME")
-	}
-
-	c.BasicAuthPassword = os.Getenv("BASIC_AUTH_PASSWORD")
-	if c.BasicAuthPassword == "" {
-		return errors.New("missing env BASIC_AUTH_PASSWORD")
-	}
 
 	c.AwsRegion = os.Getenv("AWS_REGION")
 	if c.AwsRegion == "" {
@@ -86,12 +47,6 @@ func (c *Config) LoadFromEnvironment() error {
 		return errors.New("missing env IMAGES_API_DOMAIN")
 	}
 
-	corsOrigins := os.Getenv("CORS_ALLOW_ORIGINS")
-	if corsOrigins == "" {
-		return errors.New("missing env CORS_ALLOW_ORIGINS")
-	}
-	c.CorsAllowOrigins = extractCorsOrigins(corsOrigins)
-
 	c.AwsAccessKeyId = os.Getenv("AWS_ACCESS_KEY_ID")
 	if c.AwsAccessKeyId == "" {
 		return errors.New("missing env AWS_ACCESS_KEY_ID")
@@ -100,21 +55,6 @@ func (c *Config) LoadFromEnvironment() error {
 	c.AwsSecretAccessKey = os.Getenv("AWS_SECRET_ACCESS_KEY")
 	if c.AwsSecretAccessKey == "" {
 		return errors.New("missing env AWS_SECRET_ACCESS_KEY")
-	}
-
-	// Optional
-	if port := os.Getenv("PORT"); port != "" {
-		parsed, err := strconv.ParseUint(port, 10, 64)
-		if err != nil {
-			return err
-		}
-		c.PORT = uint(parsed)
-	} else {
-		c.PORT = 3000
-	}
-
-	if debugRoutes := os.Getenv("DEBUG_ROUTES"); debugRoutes == "true" {
-		c.DebugRoutes = true
 	}
 
 	c.SqsPostAuthUrl = os.Getenv("SQS_POST_AUTH_URL")
@@ -149,13 +89,4 @@ func NewAuthConfig(config Config) cognito.Config {
 		AwsRegion:              config.AwsRegion,
 		AwsUserPoolId:          config.AwsUserPoolId,
 	}
-}
-
-func extractCorsOrigins(corsOrigins string) []string {
-	origins := strings.Split(corsOrigins, ",")
-	for i := range origins {
-		origins[i] = strings.TrimSpace(origins[i])
-	}
-
-	return origins
 }

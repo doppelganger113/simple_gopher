@@ -2,9 +2,10 @@
 ## Build
 ##
 
-FROM golang:1.16-buster AS build
+FROM golang:1.17.1-buster AS build
 
 ENV CGO_ENABLED=0
+# Single thread only
 ENV GOMAXPROCS=1
 
 WORKDIR /app
@@ -12,11 +13,13 @@ WORKDIR /app
 COPY go.mod /app/
 COPY go.sum /app/
 COPY Makefile /app/
+
 RUN go mod download
+RUN go mod verify
 
 COPY *.go /app/
 
-RUN make
+RUN make production
 
 ##
 ## Deploy

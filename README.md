@@ -1,13 +1,26 @@
 # Simple Gopher
 
-Boilerplate for writing Go applications without framework using hexagonal application development approach.
+**Introduction**
+
+You'd probably want to check out [ARCHITECTURE.md](./ARCHITECTURE.md) file to learn more on the architecture of the 
+project layout.
+
+Partial example of a service using hexagonal architecture approach with Go package oriented design. This serves as an
+example how to design Go services without a framework, high decoupling and easy testability. The example isn't 100%
+completed or fully covered, but good enough example on how it should look like. It will probably gain more polishing
+as there is always stuff to be added or updated, but for now, lets start with this.
+
+Bellow is an example of how the README.md file for the service should look like.
 
 <div align="center">
     <img src="./assets/go_logo.png" align="center" width="200" alt="Go" />
 </div>
 
-Information about the project structure and why is it the wat it is can be found in [ARCHITECTURE.MD](./ARCHITECTURE.md)
-.
+## Description
+
+Won't get too much into the service itself, it's for you to discover and isn't too important, but to keep it shot, 
+the Simple Gopher is a web API service that integrates with image resize service for resizing images and storing that 
+data and integrates with AWS Cognito for authentication.
 
 Table of contents
 =================
@@ -32,7 +45,6 @@ Table of contents
     * [Deploying to CI/CD](#deploying-to-cicd)
 * [Troubleshooting](#troubleshooting)
 * [Helpful materials](#helpful-materials)
-* [Useful libraries](#useful-libraries)
 
 <!--te-->
 
@@ -121,7 +133,7 @@ export SQS_POST_AUTH_CONSUMER_DISABLED=true
 
 ### Unit testing
 
-- `make test`
+- `make verify`
 
 ### Integration testing
 
