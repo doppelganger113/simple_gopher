@@ -4,7 +4,7 @@ import (
 	"errors"
 	"github.com/rs/zerolog/log"
 	"net/http"
-	"simple_gopher"
+	"simple_gopher/simple_gopher"
 )
 
 type FailureResponse struct {

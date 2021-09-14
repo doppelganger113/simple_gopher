@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"github.com/go-chi/chi/v5"
 	"net/http"
-	"simple_gopher"
 	"simple_gopher/auth"
 	"simple_gopher/image_resize"
+	"simple_gopher/simple_gopher"
 	"simple_gopher/storage"
 )
 

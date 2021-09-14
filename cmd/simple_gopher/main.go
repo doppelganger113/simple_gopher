@@ -13,6 +13,12 @@ import (
 	"time"
 )
 
+var (
+	GitCommit string
+	BuildDate string
+	Version   string
+)
+
 // Shutdown timeout should be as long or more as the request timeout
 const (
 	shutdownTimeoutSeconds = 30
@@ -20,25 +26,37 @@ const (
 )
 
 func main() {
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+	log.Info().Msgf("[Build info]: Version %s BuildDate %s GitCommit %s", Version, BuildDate, GitCommit)
+
 	appCtx := context.Background()
 	defer appCtx.Done()
 
-	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
-	log.Info().Msg("Starting api...")
-
 	errChannel := make(chan error)
 
-	app, buildErr := simple_gopher.InitializeApp()
-	if buildErr != nil {
-		log.Fatal().Msg(buildErr.Error())
+	log.Info().Msg("Loading configuration...")
+
+	// Configurations
+	config, err := simple_gopher.NewConfigFromEnv()
+	if err != nil {
+		log.Fatal().Msgf("failed creating configuration from env: %s", err.Error())
 		return
 	}
+
+	app, buildErr := simple_gopher.CreateApp(config)
+	if buildErr != nil {
+		log.Fatal().Msgf("failed creating app: %s", buildErr.Error())
+		return
+	}
+
 	appInitTimeout, appInitCancel := context.WithTimeout(
 		appCtx, appInitTimeoutSeconds*time.Second,
 	)
 	defer appInitCancel()
-	err := app.Init(appInitTimeout, appCtx)
-	if err != nil {
+
+	log.Info().Msg("Initializing app...")
+
+	if err = app.Init(appInitTimeout, appCtx); err != nil {
 		log.Fatal().Msgf("failed initializing app: %s", err.Error())
 		return
 	}
@@ -54,7 +72,7 @@ func main() {
 	go listenForInterrupt(errChannel)
 
 	fatalErr := <-errChannel
-	log.Info().Msg(fatalErr.Error())
+	log.Info().Msgf("Closing server: %s", fatalErr.Error())
 
 	shutdownGracefully(app, server, shutdownTimeoutSeconds*time.Second)
 }

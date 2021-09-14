@@ -55,12 +55,7 @@ func (a *App) Shutdown(_ context.Context) error {
 	return nil
 }
 
-func InitializeApp() (*App, error) {
-	// Configurations
-	config, err := NewConfigFromEnv()
-	if err != nil {
-		return nil, err
-	}
+func CreateApp(config Config) (*App, error) {
 	authConfig := NewAuthConfig(config)
 
 	// Storage
