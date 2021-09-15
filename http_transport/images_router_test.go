@@ -90,70 +90,7 @@ func TestFetchImage(t *testing.T) {
 	}
 }
 
-//func (s *MySuite) TestFetchImages() {
-//	repoMock := storage.ImageRepoMock{}
-//
-//	server, err := NewServer(app)
-//	if err != nil {
-//		s.T().Fatal(err)
-//	}
-//	defer func() {
-//		_ = app.Shutdown(context.Background())
-//	}()
-//
-//	testServer := httptest.NewServer(server.router)
-//	defer testServer.Close()
-//
-//	res, err := http.Get(testServer.URL + "/api/v1/images")
-//	assert.Nil(s.T(), err)
-//	assert.Equal(s.T(), res.StatusCode, 200)
-//
-//	defer func() {
-//		_ = res.Body.Close()
-//	}()
-//	data, err := ioutil.ReadAll(res.Body)
-//	assert.Nil(s.T(), err)
-//
-//	repoMock.AssertCalled(s.T(), "Get", mock.Anything, 20, 0, storage.OrderDescending)
-//
-//	var images storage.ImageList
-//	err = json.Unmarshal(data, &images)
-//	assert.Nil(s.T(), err)
-//
-//	expectedImages := storage.ImageList{
-//		{
-//			Id:       "3c47d736-6c4e-4a1c-a04b-3744cc30b263",
-//			Name:     "my-image-1",
-//			Format:   "jpg",
-//			Original: "images/my-unique-image.png",
-//			Domain:   "https://random.cloudfront.net",
-//			Path:     "images",
-//			Sizes: storage.ImageSizes{
-//				Original: storage.Dimensions{
-//					Width:  688,
-//					Height: 516,
-//				},
-//				Xs: &storage.Dimensions{
-//					Width:  100,
-//					Height: 75,
-//				},
-//				S: &storage.Dimensions{
-//					Width:  300,
-//					Height: 225,
-//				},
-//				M: &storage.Dimensions{
-//					Width:  500,
-//					Height: 375,
-//				},
-//			},
-//			CreatedAt: nil,
-//			UpdatedAt: nil,
-//		},
-//	}
-//
-//	assert.Equal(s.T(), images, expectedImages)
-//}
-//
+// TODO: Create router endpoint test and move the rest to the core application test
 //func (s *MySuite) TestUploadFile() {
 //	repoMock := new(storage.ImageRepoMock)
 //	repoMock.
