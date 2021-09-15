@@ -25,7 +25,7 @@ type FormFilesParams struct {
 	FileName  string
 }
 
-// Create multipart form data with multiple files and fields
+// CreateMultipartFormData creates multipart form data with multiple files and fields
 func CreateMultipartFormData(
 	formFileParams []FormFilesParams, params FormParams,
 ) (*bytes.Buffer, string, error) {
