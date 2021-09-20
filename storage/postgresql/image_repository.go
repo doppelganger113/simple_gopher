@@ -13,8 +13,8 @@ type ImageRepo struct {
 	database *Database
 }
 
-func NewImageRepository(db *Database) ImageRepo {
-	return ImageRepo{database: db}
+func NewImageRepository(db *Database) *ImageRepo {
+	return &ImageRepo{database: db}
 }
 
 func (repo ImageRepo) Get(ctx context.Context, limit, offset int, order storage.Order) (storage.ImageList, error) {
@@ -65,7 +65,7 @@ func (repo ImageRepo) Get(ctx context.Context, limit, offset int, order storage.
 	return imageList, nil
 }
 
-func (repo ImageRepo) GetOne(ctx context.Context, imageId string) (storage.Image, error) {
+func (repo *ImageRepo) GetOne(ctx context.Context, imageId string) (storage.Image, error) {
 	query := `SELECT
 id, name, format, original, domain, path, sizes, created_at, updated_at, author_id
 FROM images
@@ -88,11 +88,11 @@ LIMIT 1
 	return image, nil
 }
 
-func (repo ImageRepo) GetOneByName(ctx context.Context, name string) (storage.Image, error) {
+func (repo *ImageRepo) GetOneByName(ctx context.Context, name string) (storage.Image, error) {
 	return storage.Image{}, nil
 }
 
-func (repo ImageRepo) DoesImageExist(ctx context.Context, name string) (bool, error) {
+func (repo *ImageRepo) DoesImageExist(ctx context.Context, name string) (bool, error) {
 	query := "SELECT name FROM images WHERE name = $1 LIMIT 1"
 
 	var imageName string
@@ -107,7 +107,7 @@ func (repo ImageRepo) DoesImageExist(ctx context.Context, name string) (bool, er
 	return imageName != "", nil
 }
 
-func (repo ImageRepo) Create(ctx context.Context, image storage.Image) (storage.Image, error) {
+func (repo *ImageRepo) Create(ctx context.Context, image storage.Image) (storage.Image, error) {
 	query := `INSERT INTO
  images ("name", "format", "original", "domain", "path", "sizes", "author_id")
  VALUES ($1, $2, $3, $4, $5, $6, $7)
@@ -159,15 +159,15 @@ func (repo ImageRepo) Create(ctx context.Context, image storage.Image) (storage.
 	return createdImage, err
 }
 
-func (repo ImageRepo) SetNameById(ctx context.Context, imageId, newName string) (storage.Image, error) {
+func (repo *ImageRepo) SetNameById(ctx context.Context, imageId, newName string) (storage.Image, error) {
 	return storage.Image{}, nil
 }
 
-func (repo ImageRepo) UpdateOne(ctx context.Context, updates storage.Image) error {
+func (repo *ImageRepo) UpdateOne(ctx context.Context, updates storage.Image) error {
 	return nil
 }
 
-func (repo ImageRepo) DeleteOne(ctx context.Context, imageId string) error {
+func (repo *ImageRepo) DeleteOne(ctx context.Context, imageId string) error {
 	query := "DELETE FROM images WHERE id = $1"
 
 	commandTag, err := repo.database.dbPool.Exec(ctx, query, imageId)
@@ -185,7 +185,7 @@ func (repo ImageRepo) DeleteOne(ctx context.Context, imageId string) error {
 	return nil
 }
 
-func (repo ImageRepo) InsertMany(ctx context.Context, images storage.ImageList) (count int64, err error) {
+func (repo *ImageRepo) InsertMany(ctx context.Context, images storage.ImageList) (count int64, err error) {
 	for _, image := range images {
 		if _, err = repo.Create(ctx, image); err != nil {
 			return 0, err
@@ -194,7 +194,7 @@ func (repo ImageRepo) InsertMany(ctx context.Context, images storage.ImageList) 
 	return int64(len(images)), nil
 }
 
-func (repo ImageRepo) DeleteAll(ctx context.Context) (rowsAffected int64, err error) {
+func (repo *ImageRepo) DeleteAll(ctx context.Context) (rowsAffected int64, err error) {
 	query := "DELETE FROM images"
 	cmdTag, err := repo.database.dbPool.Exec(ctx, query)
 	if err != nil {

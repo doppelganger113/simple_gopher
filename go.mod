@@ -16,12 +16,12 @@ require (
 	github.com/lestrrat-go/jwx v1.2.6
 	github.com/rs/zerolog v1.23.0
 	github.com/stretchr/testify v1.7.0
-	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 )
 
 require (
 	github.com/goccy/go-json v0.7.6
 	github.com/golang-migrate/migrate/v4 v4.14.1
+	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
 )
 
 require (

@@ -10,7 +10,7 @@ import (
 	"simple_gopher/image_resize"
 )
 
-func (api ResizeApi) UploadFile(
+func (api *ResizeApi) UploadFile(
 	ctx context.Context,
 	signedUrl string,
 	format image_resize.ImageFormat,

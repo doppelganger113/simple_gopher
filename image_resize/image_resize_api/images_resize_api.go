@@ -11,8 +11,8 @@ type ResizeApi struct {
 	client *http.Client
 }
 
-func NewResizeApi(config Config) ResizeApi {
-	return ResizeApi{
+func NewResizeApi(config Config) *ResizeApi {
+	return &ResizeApi{
 		domain: config.ImagesApiDomain,
 		client: &http.Client{
 			Timeout: 10 * time.Second,
@@ -20,7 +20,7 @@ func NewResizeApi(config Config) ResizeApi {
 	}
 }
 
-func (api ResizeApi) url(relativePath string) string {
+func (api *ResizeApi) url(relativePath string) string {
 	return fmt.Sprintf("%s%s", api.domain, relativePath)
 }
 

@@ -10,7 +10,7 @@ import (
 	"simple_gopher/image_resize"
 )
 
-func (api ResizeApi) FetchSignedUrl(
+func (api *ResizeApi) FetchSignedUrl(
 	ctx context.Context, authorization string, format image_resize.ImageFormat,
 ) (image_resize.SignedResponse, error) {
 	request := image_resize.SignedRequest{Format: format}

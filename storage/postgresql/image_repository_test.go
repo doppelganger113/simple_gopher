@@ -10,10 +10,10 @@ import (
 	"testing"
 )
 
-func setupImageRepo(ctx context.Context) (ImageRepo, error) {
+func setupImageRepo(ctx context.Context) (*ImageRepo, error) {
 	db, err := setupDb(ctx)
 	if err != nil {
-		return ImageRepo{}, err
+		return nil, err
 	}
 
 	repo := NewImageRepository(db)
@@ -21,7 +21,7 @@ func setupImageRepo(ctx context.Context) (ImageRepo, error) {
 	return repo, nil
 }
 
-func cleanImageRepo(t *testing.T, repo ImageRepo) {
+func cleanImageRepo(t *testing.T, repo *ImageRepo) {
 	defer repo.database.Close()
 
 	_, err := repo.DeleteAll(context.Background())
@@ -30,7 +30,7 @@ func cleanImageRepo(t *testing.T, repo ImageRepo) {
 	}
 }
 
-func insertDummyData(repo ImageRepo, userRepo UserRepo) error {
+func insertDummyData(repo *ImageRepo, userRepo UserRepo) error {
 	ctx := context.Background()
 
 	createdUser, err := userRepo.Create(ctx, storage.UserCreationDto{

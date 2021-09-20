@@ -11,10 +11,10 @@ import (
 	"time"
 )
 
-func setupUserRepo(ctx context.Context) (UserRepo, error) {
+func setupUserRepo(ctx context.Context) (*UserRepo, error) {
 	db, err := setupDb(ctx)
 	if err != nil {
-		return UserRepo{}, err
+		return nil, err
 	}
 
 	repo := NewUserRepo(db)
@@ -22,7 +22,7 @@ func setupUserRepo(ctx context.Context) (UserRepo, error) {
 	return repo, nil
 }
 
-func cleanUserRepo(repo UserRepo) {
+func cleanUserRepo(repo *UserRepo) {
 	defer repo.db.Close()
 
 	_, err := repo.DeleteAll(context.Background())
@@ -31,7 +31,7 @@ func cleanUserRepo(repo UserRepo) {
 	}
 }
 
-func insertUserDummyData(t *testing.T, repo UserRepo) {
+func insertUserDummyData(t *testing.T, repo *UserRepo) {
 	dummyUser := storage.User{
 		Id:          "",
 		Email:       "john@gmail.com",

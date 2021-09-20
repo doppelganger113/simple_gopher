@@ -9,7 +9,7 @@ import (
 	"simple_gopher/storage"
 )
 
-func (service ImagesService) Update(
+func (service *ImagesService) Update(
 	ctx context.Context,
 	imageId string,
 	authorization auth.AuthorizationDto,
@@ -53,7 +53,7 @@ func (service ImagesService) Update(
 	return service.imagesRepository.SetNameById(ctx, imageId, imageName)
 }
 
-func (service ImagesService) updateNameOnly(
+func (service *ImagesService) updateNameOnly(
 	ctx context.Context,
 	authHeader string,
 	image storage.Image,
@@ -74,7 +74,7 @@ func (service ImagesService) updateNameOnly(
 	return response, nil
 }
 
-func (service ImagesService) updateImageOnly(
+func (service *ImagesService) updateImageOnly(
 	ctx context.Context,
 	authDto auth.AuthorizationDto,
 	imageId string,
@@ -128,7 +128,7 @@ func (service ImagesService) updateImageOnly(
 	return image, nil
 }
 
-func (service ImagesService) updateImageAndName(
+func (service *ImagesService) updateImageAndName(
 	ctx context.Context,
 	authHeader string,
 	imageName string,

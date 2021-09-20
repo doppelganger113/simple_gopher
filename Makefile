@@ -50,5 +50,5 @@ migrate_down:
 	go run ./cmd/migrations/main.go -steps -1
 
 # Tidy up dependencies
-clean:
+tidy:
 	go mod tidy

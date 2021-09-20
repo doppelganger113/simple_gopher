@@ -10,7 +10,7 @@ import (
 	"simple_gopher/image_resize"
 )
 
-func (api ResizeApi) Resize(
+func (api *ResizeApi) Resize(
 	ctx context.Context,
 	authorizationHeader string,
 	imageResizeRequest image_resize.ImageResizeRequest,

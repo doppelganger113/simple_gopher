@@ -10,7 +10,7 @@ import (
 	"simple_gopher/storage"
 )
 
-func (service ImagesService) getMultipleSignUrls(
+func (service *ImagesService) getMultipleSignUrls(
 	ctx context.Context, authHeader string, format image_resize.ImageFormat,
 ) (
 	image_resize.SignedResponse,
@@ -48,7 +48,7 @@ func (service ImagesService) getMultipleSignUrls(
 	return firstRes, secondRes, nil
 }
 
-func (service ImagesService) uploadBothFiles(
+func (service *ImagesService) uploadBothFiles(
 	ctx context.Context,
 	originalSignedUrl string,
 	croppedSignedUrl string,
@@ -71,7 +71,7 @@ func (service ImagesService) uploadBothFiles(
 	return err
 }
 
-func (service ImagesService) UploadAndResize(
+func (service *ImagesService) UploadAndResize(
 	ctx context.Context,
 	authorization auth.AuthorizationDto,
 	imageName string,

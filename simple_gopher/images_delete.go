@@ -9,7 +9,7 @@ import (
 	"simple_gopher/storage"
 )
 
-func (service ImagesService) DeleteOne(
+func (service *ImagesService) DeleteOne(
 	ctx context.Context,
 	auth auth.AuthorizationDto,
 	imageId string,

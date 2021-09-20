@@ -6,13 +6,13 @@ import (
 	"simple_gopher/storage"
 )
 
-func (service ImagesService) Get(
+func (service *ImagesService) Get(
 	ctx context.Context, limit, offset int, order storage.Order,
 ) (storage.ImageList, error) {
 	return service.imagesRepository.Get(ctx, limit, offset, order)
 }
 
-func (service ImagesService) GetOne(ctx context.Context, imageId string) (storage.Image, error) {
+func (service *ImagesService) GetOne(ctx context.Context, imageId string) (storage.Image, error) {
 	parsedImageId, err := uuid.Parse(imageId)
 	if err != nil {
 		return storage.Image{}, InvalidArgument{Reason: "Invalid uuid"}

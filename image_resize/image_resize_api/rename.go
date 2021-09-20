@@ -5,7 +5,7 @@ import (
 	"simple_gopher/image_resize"
 )
 
-func (api ResizeApi) Rename(
+func (api *ResizeApi) Rename(
 	ctx context.Context,
 	authorizationHeader string,
 	request image_resize.ImageRenameRequest,
