@@ -233,3 +233,6 @@ More about Heroku options can be found at the
 - [Effective Go](https://golang.org/doc/effective_go)
 - [Makefile tutorial](https://makefiletutorial.com/)
 
+## Advanced materials
+
+- [Network Programming with Go](https://ipfs.io/ipfs/QmfYeDhGH9bZzihBUDEQbCbTc5k5FZKURMUoUvfmc27BwL/index.html)
