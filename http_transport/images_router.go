@@ -5,7 +5,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"net/http"
 	"simple_gopher/auth"
-	"simple_gopher/image_resize"
+	"simple_gopher/image"
 	"simple_gopher/simple_gopher"
 	"simple_gopher/storage"
 )
@@ -63,7 +63,7 @@ func FetchImages(handler ImagesHandler) http.HandlerFunc {
 
 type UploadImageDto struct {
 	Name   string
-	Format image_resize.ImageFormat
+	Format image.Format
 }
 
 func (dto UploadImageDto) validate() error {
@@ -107,7 +107,7 @@ func AddImage(handler ImagesHandler) http.HandlerFunc {
 
 		data := &UploadImageDto{}
 		data.Name = r.PostFormValue("name")
-		data.Format = image_resize.ImageFormat(r.PostFormValue("format"))
+		data.Format = image.Format(r.PostFormValue("format"))
 		if err = data.validate(); err != nil {
 			respondBadRequestJson(w, err)
 			return
@@ -162,7 +162,7 @@ func UpdateImage(handler ImagesHandler) http.HandlerFunc {
 
 		data := &UploadImageDto{}
 		data.Name = r.PostFormValue("name")
-		data.Format = image_resize.ImageFormat(r.PostFormValue("format"))
+		data.Format = image.Format(r.PostFormValue("format"))
 		if err = data.validate(); err != nil {
 			respondBadRequestJson(w, err)
 			return

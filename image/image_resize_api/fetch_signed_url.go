@@ -7,17 +7,17 @@ import (
 	"github.com/rs/zerolog/log"
 	"io/ioutil"
 	"net/http"
-	"simple_gopher/image_resize"
+	"simple_gopher/image"
 )
 
 func (api *ResizeApi) FetchSignedUrl(
-	ctx context.Context, authorization string, format image_resize.ImageFormat,
-) (image_resize.SignedResponse, error) {
-	request := image_resize.SignedRequest{Format: format}
+	ctx context.Context, authorization string, format image.Format,
+) (image.SignedResponse, error) {
+	request := image.SignedRequest{Format: format}
 
 	jsonData, err := json.Marshal(request)
 	if err != nil {
-		return image_resize.SignedResponse{}, err
+		return image.SignedResponse{}, err
 	}
 
 	reqUrl := api.url("/signed")
@@ -29,7 +29,7 @@ func (api *ResizeApi) FetchSignedUrl(
 		bytes.NewBuffer(jsonData),
 	)
 	if err != nil {
-		return image_resize.SignedResponse{}, err
+		return image.SignedResponse{}, err
 	}
 
 	req.Header.Add("Authorization", authorization)
@@ -41,8 +41,8 @@ func (api *ResizeApi) FetchSignedUrl(
 		if res != nil {
 			status = res.StatusCode
 		}
-		return image_resize.SignedResponse{}, &image_resize.BadRequest{
-			RequestError: image_resize.RequestError{
+		return image.SignedResponse{}, &image.BadRequest{
+			RequestError: image.RequestError{
 				Url:        reqUrl,
 				StatusCode: status,
 				Message:    "failed making signed url request",
@@ -60,11 +60,11 @@ func (api *ResizeApi) FetchSignedUrl(
 
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return image_resize.SignedResponse{}, err
+		return image.SignedResponse{}, err
 	}
 	if isResponseOk(res.StatusCode) == false {
-		return image_resize.SignedResponse{}, &image_resize.BadRequest{
-			RequestError: image_resize.RequestError{
+		return image.SignedResponse{}, &image.BadRequest{
+			RequestError: image.RequestError{
 				Url:        reqUrl,
 				StatusCode: res.StatusCode,
 				Message:    "failed reading response",
@@ -74,12 +74,12 @@ func (api *ResizeApi) FetchSignedUrl(
 		}
 	}
 
-	var signedResponse image_resize.SignedResponse
+	var signedResponse image.SignedResponse
 
 	err = json.Unmarshal(body, &signedResponse)
 	if err != nil {
-		return image_resize.SignedResponse{}, &image_resize.BadRequest{
-			RequestError: image_resize.RequestError{
+		return image.SignedResponse{}, &image.BadRequest{
+			RequestError: image.RequestError{
 				Url:        reqUrl,
 				StatusCode: res.StatusCode,
 				Message:    "failed unmarshalling response",

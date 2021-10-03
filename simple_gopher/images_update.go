@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"mime/multipart"
 	"simple_gopher/auth"
-	"simple_gopher/image_resize"
+	"simple_gopher/image"
 	"simple_gopher/storage"
 )
 
@@ -14,7 +14,7 @@ func (service *ImagesService) Update(
 	imageId string,
 	authorization auth.AuthorizationDto,
 	imageName string,
-	format image_resize.ImageFormat,
+	format image.Format,
 	originalFile *multipart.FileHeader,
 	croppedFile *multipart.FileHeader,
 ) (storage.Image, error) {
@@ -58,17 +58,17 @@ func (service *ImagesService) updateNameOnly(
 	authHeader string,
 	image storage.Image,
 	newImageName string,
-) (image_resize.ImageResizeResponse, error) {
-	request := image_resize.ImageRenameRequest{
+) (image.ResizeResponse, error) {
+	request := image.ImageRenameRequest{
 		Name:    image.Name,
 		NewName: newImageName,
-		Format:  image_resize.ImageFormat(image.Format),
+		Format:  image.ImageFormat(image.Format),
 		SizeMap: fromStorageImageSizesToImageSizes(image.Sizes),
 	}
 
 	response, err := service.resizeApi.Rename(ctx, authHeader, request)
 	if err != nil {
-		return image_resize.ImageResizeResponse{}, err
+		return image.ImageResizeResponse{}, err
 	}
 
 	return response, nil
@@ -78,7 +78,7 @@ func (service *ImagesService) updateImageOnly(
 	ctx context.Context,
 	authDto auth.AuthorizationDto,
 	imageId string,
-	format image_resize.ImageFormat,
+	format image.Format,
 	originalFile *multipart.FileHeader,
 	croppedFile *multipart.FileHeader,
 ) (storage.Image, error) {
@@ -93,7 +93,7 @@ func (service *ImagesService) updateImageOnly(
 		return storage.Image{}, err
 	}
 
-	request := image_resize.ImageDeleteRequest{
+	request := image.ImageDeleteRequest{
 		Name:       image.Name,
 		Format:     format,
 		Dimensions: convertStorageSizesToDimensions(image.Sizes),
@@ -115,7 +115,7 @@ func (service *ImagesService) updateImageOnly(
 		return storage.Image{}, err
 	}
 
-	imageResizeRequest := image_resize.ImageResizeRequest{
+	imageResizeRequest := image.ImageResizeRequest{
 		Name:             image.Name,
 		FilePath:         croppedSignedUrl.FileName,
 		OriginalFilePath: originalSignedUrl.FileName,
@@ -132,7 +132,7 @@ func (service *ImagesService) updateImageAndName(
 	ctx context.Context,
 	authHeader string,
 	imageName string,
-	format image_resize.ImageFormat,
+	format image.Format,
 	image storage.Image,
 	originalFile *multipart.FileHeader,
 	croppedFile *multipart.FileHeader,
@@ -155,7 +155,7 @@ func (service *ImagesService) updateImageAndName(
 		return storage.Image{}, err
 	}
 
-	request := image_resize.ImageDeleteRequest{
+	request := image.ImageDeleteRequest{
 		Name:       imageName,
 		Format:     format,
 		Dimensions: convertStorageSizesToDimensions(image.Sizes),
@@ -164,7 +164,7 @@ func (service *ImagesService) updateImageAndName(
 		return storage.Image{}, err
 	}
 
-	resizeRequest := image_resize.ImageResizeRequest{
+	resizeRequest := image.ImageResizeRequest{
 		Name:             imageName,
 		FilePath:         cropped.FileName,
 		OriginalFilePath: original.FileName,

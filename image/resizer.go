@@ -1,4 +1,4 @@
-package image_resize
+package image
 
 import (
 	"context"
@@ -9,32 +9,32 @@ type Resizer interface {
 	FetchSignedUrl(
 		ctx context.Context,
 		authorization string,
-		format ImageFormat,
+		format Format,
 	) (SignedResponse, error)
 	UploadFile(
 		ctx context.Context,
 		signedUrl string,
-		format ImageFormat,
+		format Format,
 		fileHeader *multipart.FileHeader,
 	) error
 	Resize(
 		ctx context.Context,
 		authorizationHeader string,
-		imageResizeRequest ImageResizeRequest,
-	) (ImageResizeResponse, error)
+		imageResizeRequest ResizeRequest,
+	) (ResizeResponse, error)
 	Rename(
 		ctx context.Context,
 		authorizationHeader string,
-		request ImageRenameRequest,
-	) (ImageResizeResponse, error)
+		request RenameRequest,
+	) (ResizeResponse, error)
 	Invalidate(
 		ctx context.Context,
 		authorizationHeader string,
-		request ImageDeleteRequest,
+		request DeleteRequest,
 	) error
 	Delete(
 		ctx context.Context,
 		authorizationHeader string,
-		request ImageDeleteRequest,
+		request DeleteRequest,
 	) error
 }

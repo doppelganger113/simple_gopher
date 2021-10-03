@@ -4,7 +4,7 @@ import (
 	"context"
 	"simple_gopher/auth"
 	"simple_gopher/auth/cognito"
-	"simple_gopher/image_resize/image_resize_api"
+	"simple_gopher/image/image_resize_api"
 	"simple_gopher/storage"
 	"simple_gopher/storage/postgresql"
 )

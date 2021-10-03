@@ -7,17 +7,17 @@ import (
 	"io/ioutil"
 	"mime/multipart"
 	"net/http"
-	"simple_gopher/image_resize"
+	"simple_gopher/image"
 )
 
 func (api *ResizeApi) UploadFile(
 	ctx context.Context,
 	signedUrl string,
-	format image_resize.ImageFormat,
+	format image.Format,
 	fileHeader *multipart.FileHeader,
 ) error {
 	file, err := fileHeader.Open()
-	contentType := string(format.ToImageContentType())
+	contentType := string(format.ToContentType())
 
 	req, err := http.NewRequestWithContext(
 		ctx,
@@ -37,8 +37,8 @@ func (api *ResizeApi) UploadFile(
 		if res != nil {
 			status = res.StatusCode
 		}
-		return &image_resize.BadRequest{
-			RequestError: image_resize.RequestError{
+		return &image.BadRequest{
+			RequestError: image.RequestError{
 				Url:        signedUrl,
 				StatusCode: status,
 				Message:    fmt.Sprintf("failed upload of file type %s", contentType),
@@ -62,8 +62,8 @@ func (api *ResizeApi) UploadFile(
 		fileTypeErr := fmt.Errorf("failed uploading file of type %s", contentType)
 
 		if res.StatusCode == 403 {
-			return &image_resize.Forbidden{
-				RequestError: image_resize.RequestError{
+			return &image.Forbidden{
+				RequestError: image.RequestError{
 					Url:        signedUrl,
 					StatusCode: res.StatusCode,
 					Message:    bodyMsg,
@@ -72,8 +72,8 @@ func (api *ResizeApi) UploadFile(
 			}
 		}
 
-		return &image_resize.BadRequest{
-			RequestError: image_resize.RequestError{
+		return &image.BadRequest{
+			RequestError: image.RequestError{
 				Url:        signedUrl,
 				StatusCode: res.StatusCode,
 				Message:    bodyMsg,

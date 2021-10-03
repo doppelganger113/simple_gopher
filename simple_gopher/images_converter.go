@@ -1,19 +1,19 @@
 package simple_gopher
 
 import (
-	"simple_gopher/image_resize"
+	"simple_gopher/image"
 	"simple_gopher/storage"
 )
 
-func toImageResizeDimensions(dimensions storage.Dimensions) image_resize.Dimensions {
-	return image_resize.Dimensions{
+func toImageResizeDimensions(dimensions storage.Dimensions) image.Dimensions {
+	return image.Dimensions{
 		Width:  dimensions.Width,
 		Height: dimensions.Height,
 	}
 }
 
-func convertStorageSizesToDimensions(imageSizes storage.ImageSizes) []image_resize.Dimensions {
-	dimensions := []image_resize.Dimensions{toImageResizeDimensions(imageSizes.Original)}
+func convertStorageSizesToDimensions(imageSizes storage.ImageSizes) []image.Dimensions {
+	dimensions := []image.Dimensions{toImageResizeDimensions(imageSizes.Original)}
 
 	if imageSizes.Xs != nil {
 		dimensions = append(dimensions, toImageResizeDimensions(*imageSizes.Xs))
@@ -40,21 +40,21 @@ func convertStorageSizesToDimensions(imageSizes storage.ImageSizes) []image_resi
 	return dimensions
 }
 
-func fromImageResizeDimensions(img *image_resize.Dimensions) *storage.Dimensions {
+func fromImageResizeDimensions(img *image.Dimensions) *storage.Dimensions {
 	return &storage.Dimensions{
 		Width:  img.Width,
 		Height: img.Height,
 	}
 }
 
-func fromStorageDimensions(img *storage.Dimensions) *image_resize.Dimensions {
-	return &image_resize.Dimensions{
+func fromStorageDimensions(img *storage.Dimensions) *image.Dimensions {
+	return &image.Dimensions{
 		Width:  img.Width,
 		Height: img.Height,
 	}
 }
 
-func convertImageSizesToStorageSizes(sizes image_resize.ImageSizes) storage.ImageSizes {
+func convertImageSizesToStorageSizes(sizes image.Sizes) storage.ImageSizes {
 	return storage.ImageSizes{
 		Original: storage.Dimensions{
 			Width:  sizes.Original.Width,
@@ -70,9 +70,9 @@ func convertImageSizesToStorageSizes(sizes image_resize.ImageSizes) storage.Imag
 	}
 }
 
-func fromStorageImageSizesToImageSizes(sizes storage.ImageSizes) image_resize.ImageSizes {
-	return image_resize.ImageSizes{
-		Original: image_resize.Dimensions{
+func fromStorageImageSizesToImageSizes(sizes storage.ImageSizes) image.Sizes {
+	return image.Sizes{
+		Original: image.Dimensions{
 			Width:  sizes.Original.Width,
 			Height: sizes.Original.Height,
 		},

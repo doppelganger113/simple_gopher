@@ -1,4 +1,4 @@
-package image_resize
+package image
 
 import (
 	"context"
@@ -11,7 +11,7 @@ type Mock struct {
 func (resize Mock) FetchSignedUrl(
 	ctx context.Context,
 	authorization string,
-	format ImageFormat,
+	format Format,
 ) (SignedResponse, error) {
 	return SignedResponse{}, nil
 }
@@ -19,22 +19,22 @@ func (resize Mock) FetchSignedUrl(
 func (resize Mock) UploadFile(
 	ctx context.Context,
 	signedUrl string,
-	format ImageFormat,
+	format Format,
 	fileHeader *multipart.FileHeader,
 ) error {
 	return nil
 }
 
 func (resize Mock) Resize(
-	ctx context.Context, authorizationHeader string, imageResizeRequest ImageResizeRequest,
-) (ImageResizeResponse, error) {
-	return ImageResizeResponse{}, nil
+	ctx context.Context, authorizationHeader string, imageResizeRequest ResizeRequest,
+) (ResizeResponse, error) {
+	return ResizeResponse{}, nil
 }
 
 func (resize Mock) Invalidate(
 	ctx context.Context,
 	authorizationHeader string,
-	request ImageDeleteRequest,
+	request DeleteRequest,
 ) error {
 	return nil
 }
@@ -42,14 +42,14 @@ func (resize Mock) Invalidate(
 func (resize Mock) Rename(
 	ctx context.Context,
 	authorizationHeader string,
-	request ImageRenameRequest,
-) (ImageResizeResponse, error) {
-	return ImageResizeResponse{}, nil
+	request RenameRequest,
+) (ResizeResponse, error) {
+	return ResizeResponse{}, nil
 }
 func (resize Mock) Delete(
 	ctx context.Context,
 	authorizationHeader string,
-	request ImageDeleteRequest,
+	request DeleteRequest,
 ) error {
 	return nil
 }

@@ -5,7 +5,7 @@ import (
 	"github.com/google/uuid"
 	"log"
 	"simple_gopher/auth"
-	"simple_gopher/image_resize"
+	"simple_gopher/image"
 	"simple_gopher/storage"
 )
 
@@ -32,9 +32,9 @@ func (service *ImagesService) DeleteOne(
 		return err
 	}
 
-	deleteRequest := image_resize.ImageDeleteRequest{
+	deleteRequest := image.DeleteRequest{
 		Name:       img.Name,
-		Format:     image_resize.ImageFormat(img.Format),
+		Format:     image.Format(img.Format),
 		Dimensions: convertStorageSizesToDimensions(img.Sizes),
 	}
 	if err = service.resizeApi.Delete(ctx, auth.Header, deleteRequest); err != nil {

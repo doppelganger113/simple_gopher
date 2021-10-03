@@ -6,19 +6,19 @@ import (
 	"github.com/goccy/go-json"
 	"github.com/rs/zerolog/log"
 	"net/http"
-	"simple_gopher/image_resize"
+	"simple_gopher/image"
 )
 
-func (api *ResizeApi) Invalidate(
+func (api *ResizeApi) Delete(
 	ctx context.Context,
 	authorizationHeader string,
-	request image_resize.ImageDeleteRequest,
+	request image.DeleteRequest,
 ) error {
 	jsonData, err := json.Marshal(request)
 	if err != nil {
 		return err
 	}
-	reqUrl := api.url("/invalidate")
+	reqUrl := api.url("/delete")
 
 	req, err := http.NewRequestWithContext(
 		ctx,
@@ -39,11 +39,11 @@ func (api *ResizeApi) Invalidate(
 		if res != nil {
 			status = res.StatusCode
 		}
-		return &image_resize.BadRequest{
-			RequestError: image_resize.RequestError{
+		return &image.BadRequest{
+			RequestError: image.RequestError{
 				Url:        reqUrl,
 				StatusCode: status,
-				Message:    "failed invalidating",
+				Message:    "failed deleting",
 				Err:        err,
 			},
 			Body: string(jsonData),

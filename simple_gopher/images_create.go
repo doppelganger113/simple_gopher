@@ -6,19 +6,19 @@ import (
 	"golang.org/x/sync/errgroup"
 	"mime/multipart"
 	"simple_gopher/auth"
-	"simple_gopher/image_resize"
+	"simple_gopher/image"
 	"simple_gopher/storage"
 )
 
 func (service *ImagesService) getMultipleSignUrls(
-	ctx context.Context, authHeader string, format image_resize.ImageFormat,
+	ctx context.Context, authHeader string, format image.Format,
 ) (
-	image_resize.SignedResponse,
-	image_resize.SignedResponse,
+	image.SignedResponse,
+	image.SignedResponse,
 	error,
 ) {
-	var firstRes image_resize.SignedResponse
-	var secondRes image_resize.SignedResponse
+	var firstRes image.SignedResponse
+	var secondRes image.SignedResponse
 
 	g := new(errgroup.Group)
 
@@ -40,8 +40,8 @@ func (service *ImagesService) getMultipleSignUrls(
 
 	err := g.Wait()
 	if err != nil {
-		return image_resize.SignedResponse{},
-			image_resize.SignedResponse{},
+		return image.SignedResponse{},
+			image.SignedResponse{},
 			err
 	}
 
@@ -52,7 +52,7 @@ func (service *ImagesService) uploadBothFiles(
 	ctx context.Context,
 	originalSignedUrl string,
 	croppedSignedUrl string,
-	format image_resize.ImageFormat,
+	format image.Format,
 	original *multipart.FileHeader,
 	cropped *multipart.FileHeader,
 ) error {
@@ -75,7 +75,7 @@ func (service *ImagesService) UploadAndResize(
 	ctx context.Context,
 	authorization auth.AuthorizationDto,
 	imageName string,
-	format image_resize.ImageFormat,
+	format image.Format,
 	originalFile *multipart.FileHeader,
 	croppedFile *multipart.FileHeader,
 ) (storage.Image, error) {
@@ -121,7 +121,7 @@ func (service *ImagesService) UploadAndResize(
 		return storage.Image{}, fmt.Errorf("error uploading files: %w", err)
 	}
 
-	resizeRequest := image_resize.ImageResizeRequest{
+	resizeRequest := image.ResizeRequest{
 		Name:             seoImageName,
 		FilePath:         croppedSigned.FileName,
 		OriginalFilePath: originalSigned.FileName,

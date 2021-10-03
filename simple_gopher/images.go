@@ -2,18 +2,18 @@ package simple_gopher
 
 import (
 	"simple_gopher/auth"
-	"simple_gopher/image_resize"
+	"simple_gopher/image"
 	"simple_gopher/storage"
 )
 
 type ImagesService struct {
-	resizeApi        image_resize.Resizer
+	resizeApi        image.Resizer
 	imagesRepository storage.ImagesRepository
 	authenticator    auth.Authenticator
 }
 
 func NewImagesService(
-	resizeApi image_resize.Resizer,
+	resizeApi image.Resizer,
 	imagesRepository storage.ImagesRepository,
 	authenticator auth.Authenticator,
 ) *ImagesService {

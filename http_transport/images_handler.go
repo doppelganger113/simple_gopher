@@ -4,7 +4,7 @@ import (
 	"context"
 	"mime/multipart"
 	"simple_gopher/auth"
-	"simple_gopher/image_resize"
+	"simple_gopher/image"
 	"simple_gopher/storage"
 )
 
@@ -15,7 +15,7 @@ type ImagesHandler interface {
 		ctx context.Context,
 		authorization auth.AuthorizationDto,
 		imageName string,
-		format image_resize.ImageFormat,
+		format image.Format,
 		originalFile *multipart.FileHeader,
 		croppedFile *multipart.FileHeader,
 	) (storage.Image, error)

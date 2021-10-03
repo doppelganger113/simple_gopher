@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/stretchr/testify/assert"
-	"simple_gopher/image_resize"
+	"simple_gopher/image"
 	"simple_gopher/storage"
 	"simple_gopher/test"
 	"testing"
@@ -231,7 +231,7 @@ func TestImageRepository_Create(t *testing.T) {
 
 	assert.Equal(t, "images/another-new-name.png", createdImage.Original)
 	assert.Equal(t, "another-new-name", createdImage.Name)
-	assert.Equal(t, image_resize.PngFormat, createdImage.Format)
+	assert.Equal(t, image.PngFormat, createdImage.Format)
 	assert.Equal(t, "cloud.net", createdImage.Domain)
 	assert.Equal(t, "images", createdImage.Path)
 	assert.Equal(t, newUser.Id, createdImage.AuthorId)
