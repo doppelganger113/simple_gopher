@@ -54,26 +54,26 @@ Configuration of the application is done through the environment variables, whic
 
 **Required** environment variables:
 
-| Environment variable name         | Required  | Description                                 |
-| -------------                     | --------- | ------------------------------------------- |
-| PORT                              | Optional  | Default value is 3000                       |
-| DEBUG_ROUTES                      | Optional  | Default value is false, set to `true` for local endpoint debugging                       |
-| AWS_REGION                        | Required  | Example: `eu-central-1`                                            |
-| AWS_USER_POOL_ID                  | Required  | Example: `eu-central-1_somenumber`                                            |
-| AWS_ACCESS_KEY_ID                 | Required  | AWS IAM key id used for API to talk with AWS services                                            |
-| AWS_SECRET_ACCESS_KEY             | Required  | Secret for the above key                                            |
-| DATABASE_URL                      | Required  | Example `postgresql://postgres:example@localhost/db?sslmode=disable`                                            |
-| IMAGES_API_DOMAIN                 | Required  | Endpoint for the image service API                                            |
-| CORS_ALLOW_ORIGINS                | Required  | List of origins to allow CORS in format: `first.com, second.com, etc.com`                                            |
-| SQS_POST_AUTH_URL                 | Required  | Url of the SQS queue                                            |
-| SQS_POST_AUTH_INTERVAL_SEC        | Optional  | Interval in which the API will pool the queue for user registration events. Default value is `600`                                            |
-| SQS_POST_AUTH_CONSUMER_DISABLED   | Optional  | Default value false, set value to `true` to turn off in modes like local development to avoid messing with production                                            |
-| BASIC_AUTH_REALM                  | Optional  | Name of the realm for authentication, default is Forbidden |
-| BASIC_AUTH_USERNAME               | Optional  | Username used for basic authentication |
-| BASIC_AUTH_PASSWORD               | Optional  | Password used for basic authentication |
-| OAUTH2_AUTHORIZATION_CODE_URL     | Optional  | Url for OAuth2 authentication in format `https://your-domain.auth.eu-central-1.amazoncognito.com/login?response_type=code&client_id=<your-client-id>&redirect_uri=<your-redirect-uri>` |
-| OAUTH2_TOKEN_URL                  | Optional  | Url for OAuth2 token retrieval in format `https://your-domain.auth.eu-central-1.amazoncognito.com/oauth2/token` |
-| DOMAIN                            | Optional  | Name of the domain the app is being served from, like `localhost:3000` or `https://your-domain.herokuapp.com` |
+| Environment variable name       | Required | Description                                                                                                                                                                            |
+|---------------------------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| PORT                            | Optional | Default value is 3000                                                                                                                                                                  |
+| DEBUG_ROUTES                    | Optional | Default value is false, set to `true` for local endpoint debugging                                                                                                                     |
+| AWS_REGION                      | Required | Example: `eu-central-1`                                                                                                                                                                |
+| AWS_USER_POOL_ID                | Required | Example: `eu-central-1_somenumber`                                                                                                                                                     |
+| AWS_ACCESS_KEY_ID               | Required | AWS IAM key id used for API to talk with AWS services                                                                                                                                  |
+| AWS_SECRET_ACCESS_KEY           | Required | Secret for the above key                                                                                                                                                               |
+| DATABASE_URL                    | Required | Example `postgresql://postgres:example@localhost/db?sslmode=disable`                                                                                                                   |
+| IMAGES_API_DOMAIN               | Required | Endpoint for the image service API                                                                                                                                                     |
+| CORS_ALLOW_ORIGINS              | Required | List of origins to allow CORS in format: `first.com, second.com, etc.com`                                                                                                              |
+| SQS_POST_AUTH_URL               | Required | Url of the SQS queue                                                                                                                                                                   |
+| SQS_POST_AUTH_INTERVAL_SEC      | Optional | Interval in which the API will pool the queue for user registration events. Default value is `600`                                                                                     |
+| SQS_POST_AUTH_CONSUMER_DISABLED | Optional | Default value false, set value to `true` to turn off in modes like local development to avoid messing with production                                                                  |
+| BASIC_AUTH_REALM                | Optional | Name of the realm for authentication, default is Forbidden                                                                                                                             |
+| BASIC_AUTH_USERNAME             | Optional | Username used for basic authentication                                                                                                                                                 |
+| BASIC_AUTH_PASSWORD             | Optional | Password used for basic authentication                                                                                                                                                 |
+| OAUTH2_AUTHORIZATION_CODE_URL   | Optional | Url for OAuth2 authentication in format `https://your-domain.auth.eu-central-1.amazoncognito.com/login?response_type=code&client_id=<your-client-id>&redirect_uri=<your-redirect-uri>` |
+| OAUTH2_TOKEN_URL                | Optional | Url for OAuth2 token retrieval in format `https://your-domain.auth.eu-central-1.amazoncognito.com/oauth2/token`                                                                        |
+| DOMAIN                          | Optional | Name of the domain the app is being served from, like `localhost:3000` or `https://your-domain.herokuapp.com`                                                                          |
 
 ## Developing
 
@@ -142,12 +142,18 @@ Unit testing **with** integration testing
 - `export TEST_INTEGRATION=true`
 - `make verify`
 
-### Vetting
+### Static code checking
 
 Go provides a great tool for checking out code and detecting possible bugs, think of it as a linter. To run it execute:
 
 ```bash
 make vet
+```
+
+Some of the static checks that `vet` lacks can be be checked with [staticcheck](https://staticcheck.io/). You will need
+to install it to be able to run it.
+```bash
+make check
 ```
 
 ### Testing in CI/CD
@@ -231,6 +237,7 @@ More about Heroku options can be found at the
 - [Learn Go with tests](https://quii.gitbook.io/learn-go-with-tests/)
 - [Go by example](https://gobyexample.com/)
 - [Effective Go](https://golang.org/doc/effective_go)
+- [Go code review comments](https://github.com/golang/go/wiki/CodeReviewComments#line-length)
 - [Makefile tutorial](https://makefiletutorial.com/)
 
 ## Advanced materials

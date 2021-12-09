@@ -36,6 +36,9 @@ cover-html:
 vet:
 	go vet ./...
 
+check:
+	staticcheck ./...
+
 migrations:
 	go build -i -v -o $(GOBIN)/migrations ./cmd/migrations/main.go || exit
 
