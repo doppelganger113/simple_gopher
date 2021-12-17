@@ -30,7 +30,7 @@ func cleanImageRepo(t *testing.T, repo *ImageRepo) {
 	}
 }
 
-func insertDummyData(repo *ImageRepo, userRepo UserRepo) error {
+func insertDummyData(repo *ImageRepo, userRepo *UserRepo) error {
 	ctx := context.Background()
 
 	createdUser, err := userRepo.Create(ctx, storage.UserCreationDto{

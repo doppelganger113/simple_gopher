@@ -4,7 +4,7 @@ type Order string
 
 const (
 	OrderDescending Order = "DESC"
-	OrderAscending        = "ASC"
+	OrderAscending  Order = "ASC"
 )
 
 const (

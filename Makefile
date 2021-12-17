@@ -9,7 +9,7 @@ APP_BUILD_DATE=$(shell date +%c)
 GIT_COMMIT_SHA=$(shell git rev-list -1 HEAD)
 
 default:
-	go build -i -v -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go || exit
+	go build -v -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go || exit
 
 install:
 	go mod download
@@ -21,7 +21,7 @@ production:
 		-o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go
 
 start:
-	go build -i -v -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go|| exit
+	go build -v -o $(GOBIN)/$(PROJECTNAME) ./cmd/$(PROJECTNAME)/main.go|| exit
 	$(GOBIN)/$(PROJECTNAME) || exit
 
 verify:
@@ -40,7 +40,7 @@ check:
 	staticcheck ./...
 
 migrations:
-	go build -i -v -o $(GOBIN)/migrations ./cmd/migrations/main.go || exit
+	go build -v -o $(GOBIN)/migrations ./cmd/migrations/main.go || exit
 
 migrate_up:
 	go run ./cmd/migrations/main.go
