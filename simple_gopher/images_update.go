@@ -30,14 +30,14 @@ func (service *ImagesService) Update(
 		return storage.Image{}, err
 	}
 
-	image, err := service.imagesRepository.GetOne(ctx, imageId)
+	img, err := service.imagesRepository.GetOne(ctx, imageId)
 	if err != nil {
 		return storage.Image{}, err
 	}
 
 	if isFileUpload && imageName != "" {
 		return service.updateImageAndName(
-			ctx, authorization.Header, imageName, format, image, originalFile, croppedFile,
+			ctx, authorization.Header, imageName, format, img, originalFile, croppedFile,
 		)
 	} else if imageName == "" {
 		return service.updateImageOnly(
@@ -45,7 +45,7 @@ func (service *ImagesService) Update(
 		)
 	}
 
-	_, err = service.updateNameOnly(ctx, authorization.Header, image, imageName)
+	_, err = service.updateNameOnly(ctx, authorization.Header, img, imageName)
 	if err != nil {
 		return storage.Image{}, err
 	}
@@ -56,19 +56,19 @@ func (service *ImagesService) Update(
 func (service *ImagesService) updateNameOnly(
 	ctx context.Context,
 	authHeader string,
-	image storage.Image,
+	img storage.Image,
 	newImageName string,
 ) (image.ResizeResponse, error) {
-	request := image.ImageRenameRequest{
-		Name:    image.Name,
+	request := image.RenameRequest{
+		Name:    img.Name,
 		NewName: newImageName,
-		Format:  image.ImageFormat(image.Format),
-		SizeMap: fromStorageImageSizesToImageSizes(image.Sizes),
+		Format:  image.Format(img.Format),
+		SizeMap: fromStorageImageSizesToImageSizes(img.Sizes),
 	}
 
 	response, err := service.resizeApi.Rename(ctx, authHeader, request)
 	if err != nil {
-		return image.ImageResizeResponse{}, err
+		return image.ResizeResponse{}, err
 	}
 
 	return response, nil
@@ -82,7 +82,7 @@ func (service *ImagesService) updateImageOnly(
 	originalFile *multipart.FileHeader,
 	croppedFile *multipart.FileHeader,
 ) (storage.Image, error) {
-	image, err := service.imagesRepository.GetOne(ctx, imageId)
+	img, err := service.imagesRepository.GetOne(ctx, imageId)
 	if err != nil {
 		return storage.Image{}, err
 	}
@@ -93,10 +93,10 @@ func (service *ImagesService) updateImageOnly(
 		return storage.Image{}, err
 	}
 
-	request := image.ImageDeleteRequest{
-		Name:       image.Name,
+	request := image.DeleteRequest{
+		Name:       img.Name,
 		Format:     format,
-		Dimensions: convertStorageSizesToDimensions(image.Sizes),
+		Dimensions: convertStorageSizesToDimensions(img.Sizes),
 	}
 	err = service.resizeApi.Delete(ctx, authDto.Header, request)
 	if err != nil {
@@ -115,8 +115,8 @@ func (service *ImagesService) updateImageOnly(
 		return storage.Image{}, err
 	}
 
-	imageResizeRequest := image.ImageResizeRequest{
-		Name:             image.Name,
+	imageResizeRequest := image.ResizeRequest{
+		Name:             img.Name,
 		FilePath:         croppedSignedUrl.FileName,
 		OriginalFilePath: originalSignedUrl.FileName,
 	}
@@ -125,7 +125,7 @@ func (service *ImagesService) updateImageOnly(
 		return storage.Image{}, err
 	}
 
-	return image, nil
+	return img, nil
 }
 
 func (service *ImagesService) updateImageAndName(
@@ -133,7 +133,7 @@ func (service *ImagesService) updateImageAndName(
 	authHeader string,
 	imageName string,
 	format image.Format,
-	image storage.Image,
+	img storage.Image,
 	originalFile *multipart.FileHeader,
 	croppedFile *multipart.FileHeader,
 ) (storage.Image, error) {
@@ -155,16 +155,16 @@ func (service *ImagesService) updateImageAndName(
 		return storage.Image{}, err
 	}
 
-	request := image.ImageDeleteRequest{
+	request := image.DeleteRequest{
 		Name:       imageName,
 		Format:     format,
-		Dimensions: convertStorageSizesToDimensions(image.Sizes),
+		Dimensions: convertStorageSizesToDimensions(img.Sizes),
 	}
 	if err = service.resizeApi.Delete(ctx, authHeader, request); err != nil {
 		return storage.Image{}, err
 	}
 
-	resizeRequest := image.ImageResizeRequest{
+	resizeRequest := image.ResizeRequest{
 		Name:             imageName,
 		FilePath:         cropped.FileName,
 		OriginalFilePath: original.FileName,
@@ -181,9 +181,11 @@ func (service *ImagesService) updateImageAndName(
 		Domain:   res.Domain,
 		Path:     res.Path,
 		Sizes:    convertImageSizesToStorageSizes(res.Sizes),
-		AuthorId: image.AuthorId,
+		AuthorId: img.AuthorId,
 	}
-	err = service.imagesRepository.UpdateOne(ctx, newImage)
+	if err = service.imagesRepository.UpdateOne(ctx, newImage); err != nil {
+		return storage.Image{}, err
+	}
 
 	return newImage, nil
 }

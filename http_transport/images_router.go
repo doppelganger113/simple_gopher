@@ -85,6 +85,14 @@ func (dto UploadImageDto) validate() error {
 func AddImage(handler ImagesHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(maxBodyLimitBytes)
+		if err != nil {
+			respondJson(
+				w,
+				http.StatusBadRequest,
+				newFailureResponse("failed parsing multipart form data"),
+			)
+			return
+		}
 
 		_, originalFileHeader, err := r.FormFile("originalFile")
 		if err != nil {
@@ -114,13 +122,13 @@ func AddImage(handler ImagesHandler) http.HandlerFunc {
 		}
 
 		ctx := r.Context()
-		authorization, err := auth.ExtractAuthorizationDto(ctx, UserAuthDtoKey)
+		authorization, err := auth.ExtractAuthorizationDto(ctx, string(UserAuthDtoKey))
 		if err != nil {
 			handleError(w, err)
 			return
 		}
 
-		image, err := handler.UploadAndResize(
+		img, err := handler.UploadAndResize(
 			ctx,
 			authorization,
 			data.Name,
@@ -133,13 +141,21 @@ func AddImage(handler ImagesHandler) http.HandlerFunc {
 			return
 		}
 
-		respondJson(w, http.StatusCreated, image)
+		respondJson(w, http.StatusCreated, img)
 	}
 }
 
 func UpdateImage(handler ImagesHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(maxBodyLimitBytes)
+		if err != nil {
+			respondJson(
+				w,
+				http.StatusBadRequest,
+				newFailureResponse("failed parsing multipart form data"),
+			)
+			return
+		}
 
 		_, originalFileHeader, err := r.FormFile("originalFile")
 		if err != nil {
@@ -169,13 +185,13 @@ func UpdateImage(handler ImagesHandler) http.HandlerFunc {
 		}
 
 		ctx := r.Context()
-		authorization, err := auth.ExtractAuthorizationDto(ctx, UserAuthDtoKey)
+		authorization, err := auth.ExtractAuthorizationDto(ctx, string(UserAuthDtoKey))
 		if err != nil {
 			handleError(w, err)
 			return
 		}
 
-		image, err := handler.UploadAndResize(
+		img, err := handler.UploadAndResize(
 			ctx,
 			authorization,
 			data.Name,
@@ -188,7 +204,7 @@ func UpdateImage(handler ImagesHandler) http.HandlerFunc {
 			return
 		}
 
-		respondJson(w, http.StatusCreated, image)
+		respondJson(w, http.StatusCreated, img)
 	}
 }
 
@@ -196,7 +212,7 @@ func DeleteOne(handler ImagesHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
 		imageId := chi.URLParam(r, "imageId")
-		authDto, err := auth.ExtractAuthorizationDto(ctx, UserAuthDtoKey)
+		authDto, err := auth.ExtractAuthorizationDto(ctx, string(UserAuthDtoKey))
 		if err != nil {
 			handleError(w, err)
 			return

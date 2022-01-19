@@ -1,4 +1,4 @@
-package cloud_patterns
+package concurrency
 
 import "context"
 

@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/jackc/pgx/v4/pgxpool"
 	"github.com/rs/zerolog/log"
-	"simple_gopher/cloud_patterns"
+	"simple_gopher/concurrency"
 	"time"
 )
 
@@ -22,7 +22,7 @@ func NewDatabase() *Database {
 func (db *Database) Connect(ctx context.Context, connectionString string) error {
 	log.Info().Msg("[Database]: Trying to connect...")
 
-	retry := cloud_patterns.NewRetry(3, 3*time.Second)
+	retry := concurrency.NewRetry(3, 3*time.Second)
 	err := retry.Execute(ctx, func(ctx context.Context, retryCount uint) error {
 		if retryCount > 0 {
 			log.Info().Msgf("[Database]: Retrying connection %d", retryCount)

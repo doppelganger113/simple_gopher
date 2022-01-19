@@ -32,6 +32,9 @@ func main() {
 
 	log.Println("Connecting to the database")
 	db, err := sql.Open("postgres", sett.connectionUrl)
+	if err != nil {
+		log.Fatalf("failed connecting to postgres: %v\n", err)
+	}
 	driver, err := postgres.WithInstance(db, &postgres.Config{})
 	if err != nil {
 		log.Fatalln(fmt.Errorf("failed creating DB driver: %w", err))

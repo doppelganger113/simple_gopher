@@ -1,4 +1,4 @@
-package cloud_patterns
+package concurrency
 
 import (
 	"context"
@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-var TooManyCallsErr = errors.New("too many calls")
+var ErrTooManyCalls = errors.New("too many calls")
 
 type Effector func(ctx context.Context)
 
@@ -51,7 +51,7 @@ func (t *throttle) Execute(ctx context.Context, effector Effector) error {
 	})
 
 	if t.tokens <= 0 {
-		return TooManyCallsErr
+		return ErrTooManyCalls
 	}
 
 	t.tokens--

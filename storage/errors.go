@@ -2,7 +2,7 @@ package storage
 
 import "errors"
 
-var DuplicateErr = errors.New("duplicate, already exists")
+var ErrDuplicate = errors.New("duplicate, already exists")
 
 type NotFound struct {
 	Msg string

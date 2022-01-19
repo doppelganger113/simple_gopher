@@ -7,7 +7,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/sqs"
 	"github.com/rs/zerolog/log"
-	"simple_gopher/cloud_patterns"
+	"simple_gopher/concurrency"
 	"simple_gopher/storage"
 )
 
@@ -46,7 +46,7 @@ func (authConsumer *AuthConsumer) StartConsuming(ctx context.Context) error {
 				log.Err(err).Caller().Msgf("error consuming messages")
 			}
 
-			err = cloud_patterns.SleepSecondsWithContext(ctx, authConsumer.config.SqsPostAuthIntervalSec)
+			err = concurrency.SleepSecondsWithContext(ctx, authConsumer.config.SqsPostAuthIntervalSec)
 			if err != nil {
 				return err
 			}
@@ -123,7 +123,7 @@ func (authConsumer *AuthConsumer) handleMessage(message *sqs.Message) error {
 	}
 	_, err := authConsumer.userStorage.Create(context.Background(), newUser)
 	if err != nil {
-		if errors.Is(err, storage.DuplicateErr) {
+		if errors.Is(err, storage.ErrDuplicate) {
 			log.Info().Caller().Msgf("%s already exists, skipping", newUser.Email)
 		} else {
 			return err

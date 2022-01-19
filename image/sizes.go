@@ -62,31 +62,31 @@ func (sizes Sizes) ToString() string {
 }
 
 func (sizes Sizes) IsEqualTo(compareSizes Sizes) bool {
-	if AreEqual(&sizes.Original, &compareSizes.Original) == false {
+	if !AreEqual(&sizes.Original, &compareSizes.Original) {
 		return false
 	}
-	if AreEqual(sizes.Xs, compareSizes.Xs) == false {
+	if !AreEqual(sizes.Xs, compareSizes.Xs) {
 		return false
 	}
-	if AreEqual(sizes.S, compareSizes.S) == false {
+	if !AreEqual(sizes.S, compareSizes.S) {
 		return false
 	}
-	if AreEqual(sizes.M, compareSizes.M) == false {
+	if !AreEqual(sizes.M, compareSizes.M) {
 		return false
 	}
-	if AreEqual(sizes.L, compareSizes.L) == false {
+	if !AreEqual(sizes.L, compareSizes.L) {
 		return false
 	}
-	if AreEqual(sizes.XL, compareSizes.XL) == false {
+	if !AreEqual(sizes.XL, compareSizes.XL) {
 		return false
 	}
-	if AreEqual(sizes.XXL, compareSizes.XXL) == false {
+	if !AreEqual(sizes.XXL, compareSizes.XXL) {
 		return false
 	}
-	if AreEqual(sizes.XXL, compareSizes.XXL) == false {
+	if !AreEqual(sizes.XXL, compareSizes.XXL) {
 		return false
 	}
-	if AreEqual(sizes.XXXL, compareSizes.XXXL) == false {
+	if !AreEqual(sizes.XXXL, compareSizes.XXXL) {
 		return false
 	}
 	return true

@@ -8,8 +8,10 @@ import (
 	"simple_gopher/auth"
 )
 
+type ContextKey string
+
 var (
-	UserAuthDtoKey = "UserAuthDtoKey"
+	UserAuthDtoKey ContextKey = "UserAuthDtoKey"
 )
 
 type Middleware func(next http.HandlerFunc) http.HandlerFunc

@@ -6,7 +6,6 @@ import (
 )
 
 const bearerTokenMock = "tokenMock"
-const authHeaderMock = "Bearer " + bearerTokenMock
 
 type AuthenticatorMock struct{}
 

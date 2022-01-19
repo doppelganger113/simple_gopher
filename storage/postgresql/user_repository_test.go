@@ -129,5 +129,5 @@ func TestUserRepo_Create_Exists(t *testing.T) {
 	}
 
 	_, err = repo.Create(ctx, newUser)
-	assert.Equal(t, true, errors.Is(err, storage.DuplicateErr))
+	assert.Equal(t, true, errors.Is(err, storage.ErrDuplicate))
 }

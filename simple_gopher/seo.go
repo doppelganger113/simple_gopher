@@ -19,7 +19,7 @@ func areRestConnectionChars(index int, text string) bool {
 	}
 	restOfTheText := text[index:]
 	for _, char := range restOfTheText {
-		if isConnectionChar(char) == false {
+		if !isConnectionChar(char) {
 			return false
 		}
 	}

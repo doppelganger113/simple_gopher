@@ -28,31 +28,31 @@ func (imageSizes ImageSizes) ToString() string {
 }
 
 func (imageSizes ImageSizes) IsEqualTo(sizes ImageSizes) bool {
-	if AreEqual(&imageSizes.Original, &sizes.Original) == false {
+	if !AreEqual(&imageSizes.Original, &sizes.Original) {
 		return false
 	}
-	if AreEqual(imageSizes.Xs, sizes.Xs) == false {
+	if !AreEqual(imageSizes.Xs, sizes.Xs) {
 		return false
 	}
-	if AreEqual(imageSizes.S, sizes.S) == false {
+	if !AreEqual(imageSizes.S, sizes.S) {
 		return false
 	}
-	if AreEqual(imageSizes.M, sizes.M) == false {
+	if !AreEqual(imageSizes.M, sizes.M) {
 		return false
 	}
-	if AreEqual(imageSizes.L, sizes.L) == false {
+	if !AreEqual(imageSizes.L, sizes.L) {
 		return false
 	}
-	if AreEqual(imageSizes.XL, sizes.XL) == false {
+	if !AreEqual(imageSizes.XL, sizes.XL) {
 		return false
 	}
-	if AreEqual(imageSizes.XXL, sizes.XXL) == false {
+	if !AreEqual(imageSizes.XXL, sizes.XXL) {
 		return false
 	}
-	if AreEqual(imageSizes.XXL, sizes.XXL) == false {
+	if !AreEqual(imageSizes.XXL, sizes.XXL) {
 		return false
 	}
-	if AreEqual(imageSizes.XXXL, sizes.XXXL) == false {
+	if !AreEqual(imageSizes.XXXL, sizes.XXXL) {
 		return false
 	}
 	return true

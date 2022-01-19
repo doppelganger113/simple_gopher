@@ -239,6 +239,8 @@ More about Heroku options can be found at the
 - [Effective Go](https://golang.org/doc/effective_go)
 - [Go code review comments](https://github.com/golang/go/wiki/CodeReviewComments#line-length)
 - [Makefile tutorial](https://makefiletutorial.com/)
+- [Go Memory model](https://golang.org/ref/mem)
+- [Race detector](https://golang.org/doc/articles/race_detector)
 
 ## Advanced materials
 

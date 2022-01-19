@@ -74,7 +74,7 @@ RETURNING id, email, role, cog_username, cog_sub, cog_name, created_at, updated_
 		)
 	if err != nil {
 		if strings.Contains(err.Error(), "duplicate") {
-			return storage.User{}, storage.DuplicateErr
+			return storage.User{}, storage.ErrDuplicate
 		}
 		return storage.User{}, err
 	}

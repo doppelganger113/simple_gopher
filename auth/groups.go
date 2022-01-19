@@ -4,7 +4,7 @@ import (
 	"errors"
 )
 
-var MissingAuthDto = errors.New("missing auth dto")
+var ErrMissingAuthDto = errors.New("missing auth dto")
 
 func IsInRequiredGroup(cognitoGroups interface{}, requiredGroup Role) bool {
 	switch groups := cognitoGroups.(type) {

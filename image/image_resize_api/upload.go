@@ -53,7 +53,7 @@ func (api *ResizeApi) UploadFile(
 		}
 	}()
 
-	if isResponseOk(res.StatusCode) == false {
+	if !isResponseOk(res.StatusCode) {
 		body, e := ioutil.ReadAll(res.Body)
 		if e != nil {
 			return e

@@ -62,7 +62,7 @@ func (api *ResizeApi) Resize(
 	if err != nil {
 		return image.ResizeResponse{}, err
 	}
-	if isResponseOk(res.StatusCode) == false {
+	if !isResponseOk(res.StatusCode) {
 		if res.StatusCode == 403 {
 			return image.ResizeResponse{}, &image.Forbidden{
 				RequestError: image.RequestError{

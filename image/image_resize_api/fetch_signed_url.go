@@ -62,7 +62,7 @@ func (api *ResizeApi) FetchSignedUrl(
 	if err != nil {
 		return image.SignedResponse{}, err
 	}
-	if isResponseOk(res.StatusCode) == false {
+	if !isResponseOk(res.StatusCode) {
 		return image.SignedResponse{}, &image.BadRequest{
 			RequestError: image.RequestError{
 				Url:        reqUrl,

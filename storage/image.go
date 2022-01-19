@@ -35,7 +35,7 @@ func (image Image) IsEqualTo(img Image) bool {
 		return false
 	}
 
-	if image.Sizes.IsEqualTo(img.Sizes) == false {
+	if !image.Sizes.IsEqualTo(img.Sizes) {
 		return false
 	}
 
@@ -61,7 +61,7 @@ type ImagePredicate func(img Image) bool
 
 func (images ImageList) findBy(predicate ImagePredicate) *Image {
 	for _, image := range images {
-		if predicate(image) == true {
+		if predicate(image) {
 			return &image
 		}
 	}
@@ -85,7 +85,7 @@ func (images ImageList) IsEqualTo(imageList ImageList) bool {
 			if foundImg == nil {
 				return false
 			}
-			if image.IsEqualTo(*foundImg) == false {
+			if !image.IsEqualTo(*foundImg) {
 				return false
 			}
 		}

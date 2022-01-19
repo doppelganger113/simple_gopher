@@ -1,4 +1,4 @@
-package cloud_patterns
+package concurrency
 
 import (
 	"context"
@@ -6,14 +6,18 @@ import (
 	"net/http"
 )
 
-const CorrelationIdKey = "X-Correlation-Id"
+type ContextKey string
+
+var (
+	CorrelationIdKey ContextKey = "X-Correlation-Id"
+)
 
 // CorrelationId middleware adds correlation id to the context from the header if it exists or creates one
 // Access is it through requests
-//  val := req.Context().Value(cloud_patterns.CorrelationIdKey)
+//  val := req.Context().Value(concurrency.CorrelationIdKey)
 func CorrelationId(next http.HandlerFunc, errHandler func(err error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		correlationId := req.Header.Get(CorrelationIdKey)
+		correlationId := req.Header.Get(string(CorrelationIdKey))
 		if correlationId == "" {
 			id, err := uuid.NewUUID()
 			if err != nil {
