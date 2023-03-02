@@ -1,12 +1,10 @@
 package postgresql
 
 import (
+	"api/storage"
+	"api/test"
 	"context"
 	"fmt"
-	"github.com/stretchr/testify/assert"
-	"simple_gopher/image"
-	"simple_gopher/storage"
-	"simple_gopher/test"
 	"testing"
 )
 
@@ -176,17 +174,38 @@ func TestImageRepo_GetOne(t *testing.T) {
 		t.Fatal("Got nil images")
 	}
 
-	image, err := repo.GetOne(context.Background(), imageList[1].Id)
-	assert.Nil(t, err)
-	assert.Equal(t, imageList[1].Id, image.Id)
-	assert.Equal(t, imageList[1].Domain, image.Domain)
-	assert.Equal(t, imageList[1].Format, image.Format)
-	assert.Equal(t, imageList[1].Name, image.Name)
-	assert.Equal(t, imageList[1].Sizes, image.Sizes)
-	assert.Equal(t, imageList[1].AuthorId, image.AuthorId)
-	assert.Equal(t, imageList[1].CreatedAt, image.CreatedAt)
-	assert.Equal(t, imageList[1].Path, image.Path)
-	assert.Equal(t, imageList[1].Original, image.Original)
+	img, err := repo.GetOne(context.Background(), imageList[1].Id)
+	if err != nil {
+		t.Fatalf("expected empty error, got %v", err)
+	}
+	secondImage := imageList[1]
+	if secondImage.Id != img.Id {
+		t.Fatal("failed id assertion")
+	}
+	if secondImage.Domain != img.Domain {
+		t.Fatal("failed Domain assertion")
+	}
+	if secondImage.Format != img.Format {
+		t.Fatal("failed Format assertion")
+	}
+	if secondImage.Name != img.Name {
+		t.Fatal("failed Name assertion")
+	}
+	if secondImage.Sizes != img.Sizes {
+		t.Fatal("failed Sizes assertion")
+	}
+	if secondImage.AuthorId != img.AuthorId {
+		t.Fatal("failed AuthorId assertion")
+	}
+	if secondImage.CreatedAt != img.CreatedAt {
+		t.Fatal("failed CreatedAt assertion")
+	}
+	if secondImage.Path != img.Path {
+		t.Fatal("failed Path assertion")
+	}
+	if secondImage.Original != img.Original {
+		t.Fatal("failed Original assertion")
+	}
 }
 
 func TestImageRepository_Create(t *testing.T) {
@@ -194,10 +213,14 @@ func TestImageRepository_Create(t *testing.T) {
 	ctx := context.Background()
 
 	repo, err := setupImageRepo(ctx)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("failed setting image repo: %v", err)
+	}
 
 	userRepo, err := setupUserRepo(ctx)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("failed setting user repo: %v", err)
+	}
 	defer cleanUserRepo(userRepo)
 	defer cleanImageRepo(t, repo)
 
@@ -209,7 +232,9 @@ func TestImageRepository_Create(t *testing.T) {
 		CogName:     "",
 		Disabled:    false,
 	})
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("failed creating user: %v", err)
+	}
 
 	img := storage.Image{
 		Name:     "another-new-name",
@@ -227,15 +252,31 @@ func TestImageRepository_Create(t *testing.T) {
 	}
 
 	createdImage, err := repo.Create(context.Background(), img)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("failed creating image: %v", err)
+	}
 
-	assert.Equal(t, "images/another-new-name.png", createdImage.Original)
-	assert.Equal(t, "another-new-name", createdImage.Name)
-	assert.Equal(t, image.PngFormat, createdImage.Format)
-	assert.Equal(t, "cloud.net", createdImage.Domain)
-	assert.Equal(t, "images", createdImage.Path)
-	assert.Equal(t, newUser.Id, createdImage.AuthorId)
-	assert.Equal(t, img.Sizes, createdImage.Sizes)
+	if createdImage.Original != "images/another-new-name.png" {
+		t.Fatal("failed asserting Original")
+	}
+	if createdImage.Name != "another-new-name" {
+		t.Fatal("failed asserting Name")
+	}
+	if createdImage.Format != storage.PngFormat {
+		t.Fatal("failed asserting Format")
+	}
+	if createdImage.Domain != "cloud.net" {
+		t.Fatal("failed asserting Domain")
+	}
+	if createdImage.Path != "images" {
+		t.Fatal("failed asserting Path")
+	}
+	if createdImage.AuthorId != newUser.Id {
+		t.Fatal("failed asserting Id")
+	}
+	if createdImage.Sizes != img.Sizes {
+		t.Fatal("failed asserting Sizes")
+	}
 }
 
 func TestImageRepository_DoesImageExist(t *testing.T) {

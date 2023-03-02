@@ -1,11 +1,12 @@
 package postgresql
 
 import (
+	"api/storage"
 	"context"
+	"encoding/json"
 	"errors"
-	"github.com/goccy/go-json"
+	"fmt"
 	"github.com/jackc/pgx/v4"
-	"simple_gopher/storage"
 	"time"
 )
 
@@ -27,7 +28,7 @@ func (repo ImageRepo) Get(ctx context.Context, limit, offset int, order storage.
 `
 	rows, err := repo.database.dbPool.Query(ctx, query, limit, offset)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed querying images: %w", err)
 	}
 	defer rows.Close()
 
@@ -42,7 +43,7 @@ func (repo ImageRepo) Get(ctx context.Context, limit, offset int, order storage.
 			&id, &name, &format, &original, &domain, &path, &sizes, &createdAt, &updatedAt, &authorId,
 		)
 		if err != nil {
-			return nil, err
+			return nil, fmt.Errorf("failed scaning images: %w", err)
 		}
 		imageList = append(imageList, storage.Image{
 			Id:        id,

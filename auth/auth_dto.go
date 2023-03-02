@@ -10,7 +10,7 @@ type AuthorizationDto struct {
 	Role     Role
 }
 
-func ExtractAuthorizationDto(ctx context.Context, key string) (AuthorizationDto, error) {
+func ExtractAuthorizationDto(ctx context.Context, key interface{}) (AuthorizationDto, error) {
 	value := ctx.Value(key)
 	if value == nil {
 		return AuthorizationDto{}, ErrMissingAuthDto

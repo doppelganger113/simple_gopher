@@ -1,10 +1,10 @@
 package postgresql
 
 import (
+	"api/storage"
 	"context"
 	"errors"
 	"github.com/jackc/pgx/v4"
-	"simple_gopher/storage"
 	"strings"
 )
 

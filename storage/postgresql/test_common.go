@@ -1,6 +1,7 @@
 package postgresql
 
 import (
+	"api/logger"
 	"context"
 	"errors"
 	"os"
@@ -12,7 +13,7 @@ func setupDb(ctx context.Context) (*Database, error) {
 		return nil, errors.New("missing DATABASE_TEST_URL env variable")
 	}
 
-	db := NewDatabase()
+	db := NewDatabase(logger.NewLogger())
 	err := db.Connect(ctx, dbUrl)
 	if err != nil {
 		return nil, err

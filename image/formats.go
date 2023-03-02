@@ -8,10 +8,10 @@ const (
 	WebpFormat Format = "webp"
 )
 
-var SupportedImageFormats = []Format{JpgFormat, PngFormat, WebpFormat}
+var SupportedFormats = []Format{JpgFormat, PngFormat, WebpFormat}
 
 func (format Format) IsSupported() bool {
-	for _, f := range SupportedImageFormats {
+	for _, f := range SupportedFormats {
 		if f == format {
 			return true
 		}

@@ -1,11 +1,14 @@
 package test
 
 import (
+	"api/pkg/signaling"
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"mime/multipart"
 	"os"
 	"testing"
+	"time"
 )
 
 type Status string
@@ -70,4 +73,11 @@ func CreateMultipartFormData(
 	}
 
 	return body, contentType, nil
+}
+
+func TimeoutInterrupt(timeout time.Duration) signaling.EventEmitter {
+	return func(err chan<- error) {
+		time.Sleep(timeout)
+		err <- fmt.Errorf("timed out")
+	}
 }

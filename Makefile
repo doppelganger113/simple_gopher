@@ -1,5 +1,5 @@
 SHELL = /bin/bash
-PROJECTNAME=simple_gopher
+PROJECTNAME=api
 
 GOBASE=$(shell pwd)
 GOBIN=bin
@@ -39,18 +39,18 @@ vet:
 check:
 	staticcheck ./...
 
-migrations:
-	go build -v -o $(GOBIN)/migrations ./cmd/migrations/main.go || exit
+migrate:
+	go build -v -o $(GOBIN)/migrate ./cmd/migrate/main.go || exit
 
 migrate_up:
-	go run ./cmd/migrations/main.go
+	go run ./cmd/migrate/main.go
 
 migrate_up_step:
-	go run ./cmd/migrations/main.go -steps 1
+	go run ./cmd/migrate/main.go -steps 1
 
 # Migrate down by step is safer!
 migrate_down:
-	go run ./cmd/migrations/main.go -steps -1
+	go run ./cmd/migrate/main.go -steps -1
 
 # Tidy up dependencies
 tidy:

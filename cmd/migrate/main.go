@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	defaultMigrationDir = "resources/migrations"
+	defaultMigrationDir = "storage/migrations"
 )
 
 type settings struct {

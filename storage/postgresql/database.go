@@ -1,31 +1,34 @@
 package postgresql
 
 import (
+	"api/pkg/concurrency"
 	"context"
-	"errors"
 	"github.com/jackc/pgx/v4/pgxpool"
-	"github.com/rs/zerolog/log"
-	"simple_gopher/concurrency"
+	"github.com/rs/zerolog"
 	"time"
 )
 
+const connectionRetryCount = 4
+const connectionRetryBackoff = 3 * time.Second
+
 type Database struct {
 	dbPool *pgxpool.Pool
+	logger *zerolog.Logger
 }
 
-func NewDatabase() *Database {
-	return &Database{}
+func NewDatabase(logger *zerolog.Logger) *Database {
+	return &Database{logger: logger}
 }
 
 // Connect method connects the database where the connection url is in format:
 // "postgresql://postgres:example@localhost/dbname"
 func (db *Database) Connect(ctx context.Context, connectionString string) error {
-	log.Info().Msg("[Database]: Trying to connect...")
+	db.logger.Info().Msg("[Database]: Trying to connect...")
 
-	retry := concurrency.NewRetry(3, 3*time.Second)
+	retry := concurrency.NewRetry(connectionRetryCount, connectionRetryBackoff)
 	err := retry.Execute(ctx, func(ctx context.Context, retryCount uint) error {
 		if retryCount > 0 {
-			log.Info().Msgf("[Database]: Retrying connection %d", retryCount)
+			db.logger.Info().Msg("[Database]: Retrying connection...")
 		}
 
 		dbpool, err := pgxpool.Connect(context.Background(), connectionString)
@@ -37,15 +40,14 @@ func (db *Database) Connect(ctx context.Context, connectionString string) error 
 		return nil
 	})
 	if err != nil {
-		return errors.New("[Database]: failed to connect")
+		return err
 	}
 
-	log.Info().Msg("[Database]: connected")
-
+	db.logger.Info().Msg("[Database]: connected")
 	return nil
 }
 
 func (db *Database) Close() {
-	log.Info().Msg("[Database]: Closing connection.")
+	db.logger.Info().Msg("[Database]: Closing connection.")
 	db.dbPool.Close()
 }

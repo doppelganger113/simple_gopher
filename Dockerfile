@@ -2,11 +2,9 @@
 ## Build
 ##
 
-FROM golang:1.17.1-buster AS build
+FROM golang:1.20-buster AS build
 
 ENV CGO_ENABLED=0
-# Single thread only
-ENV GOMAXPROCS=1
 
 WORKDIR /app
 
@@ -29,7 +27,7 @@ FROM gcr.io/distroless/base-debian10
 
 WORKDIR /
 
-COPY --from=build /app/bin/api /api
+COPY --from=build /core/bin/api /api
 
 EXPOSE 3000
 

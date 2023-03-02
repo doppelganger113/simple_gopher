@@ -1,48 +1,36 @@
 package auth
 
 import (
+	"api/storage"
 	"context"
-	"github.com/stretchr/testify/mock"
-	"simple_gopher/storage"
 )
 
-type AuthMock struct {
-	mock.Mock
+type Mock struct {
 }
 
-func (auth *AuthMock) FetchAndSetKeySet(ctx context.Context) error {
-	args := auth.Called(ctx)
-
-	return args.Error(0)
+func (auth *Mock) FetchAndSetKeySet(_ context.Context) error {
+	return nil
 }
-func (auth *AuthMock) IsTokenValid(
-	ctx context.Context, token string, authGroup Role,
+func (auth *Mock) IsTokenValid(
+	_ context.Context, _ string, _ Role,
 ) (valid bool, username string, err error) {
-	args := auth.Called(ctx, token, authGroup)
-
-	return args.Bool(0), args.String(1), args.Error(2)
+	return false, "", err
 }
 
-func (auth *AuthMock) GetUserAttributes(
-	ctx context.Context, username string,
-) (*UserAttributes, error) {
-	args := auth.Called(ctx, username)
-
-	return args.Get(0).(*UserAttributes), args.Error(1)
+func (auth *Mock) GetUserAttributes(
+	_ context.Context, _ string,
+) (UserAttributes, error) {
+	return UserAttributes{}, nil
 }
 
-func (auth *AuthMock) GetOrSyncUser(
-	ctx context.Context, authorization AuthorizationDto,
-) (*storage.User, error) {
-	args := auth.Called(ctx, authorization)
-
-	return args.Get(0).(*storage.User), args.Error(1)
+func (auth *Mock) GetOrSyncUser(
+	_ context.Context, _ AuthorizationDto,
+) (storage.User, error) {
+	return storage.User{}, nil
 }
-func (auth *AuthMock) StartConsumingPostAuthAsync(ctx context.Context) {
-	_ = auth.Called(ctx)
-}
-func (auth *AuthMock) Shutdown() error {
-	args := auth.Called()
 
-	return args.Error(0)
+func (auth *Mock) StartConsumingPostAuthAsync(_ context.Context) {
+}
+func (auth *Mock) Shutdown() error {
+	return nil
 }

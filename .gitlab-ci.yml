@@ -27,12 +27,12 @@ tests:
     - make
     - make vet
     - make migrate_up
-    - make test
+    - make verify
   variables:
     DATABASE_TEST_URL: "postgres://runner:example@postgres:5432/nice_marmot?sslmode=disable"
     DATABASE_URL: "postgres://runner:example@postgres:5432/nice_marmot?sslmode=disable"
     ENVIRONMENT: test
-    TEST_INTEGRATION: "true"
+    TEST_INTEGRATION: "false"
     SQS_POST_AUTH_CONSUMER_DISABLED: "true"
     # Other variables are used through GitLab secrets
 

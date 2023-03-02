@@ -1,8 +1,8 @@
 package auth
 
 import (
+	"api/storage"
 	"context"
-	"simple_gopher/storage"
 )
 
 type UserAttributes struct {

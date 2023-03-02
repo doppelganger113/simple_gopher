@@ -1,12 +1,11 @@
 package postgresql
 
 import (
+	"api/storage"
+	"api/test"
 	"context"
 	"errors"
-	"github.com/stretchr/testify/assert"
 	"log"
-	"simple_gopher/storage"
-	"simple_gopher/test"
 	"testing"
 	"time"
 )
@@ -44,7 +43,9 @@ func insertUserDummyData(t *testing.T, repo *UserRepo) {
 	}
 
 	_, err := repo.InsertMany(context.Background(), storage.UserList{dummyUser})
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("expected error to be nil, got %v", err)
+	}
 }
 
 func TestUserRepo_GetByUsername(t *testing.T) {
@@ -52,33 +53,50 @@ func TestUserRepo_GetByUsername(t *testing.T) {
 	ctx := context.Background()
 
 	repo, err := setupUserRepo(ctx)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("expected error to be nil, got %v", err)
+	}
 	defer cleanUserRepo(repo)
 
 	insertUserDummyData(t, repo)
 
 	user, err := repo.GetByUsername(ctx, "what-ever-username123")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("expected error to be nil, got %v", err)
+	}
 
-	assert.Equal(t, "john@gmail.com", user.Email)
-	assert.Equal(t, "what-ever-username123", user.CogUsername)
-	assert.Equal(t, "what-ever-username123", user.CogUsername)
-	assert.Equal(t, "123452431325-31525123", user.CogSub)
-	assert.Equal(t, "uagaewt1234", user.CogName)
-	assert.Equal(t, storage.AuthRoleNone, user.Role)
+	if user.Email != " john@gmail.com" {
+		t.Errorf("failed asserting email, got %s", user.Email)
+	}
+	if user.CogUsername != "what-ever-username123" {
+		t.Errorf("failed asserting CogUsername, got %s", user.CogUsername)
+	}
+	if user.CogSub != "123452431325-31525123" {
+		t.Errorf("failed asserting CogSub, got %s", user.CogSub)
+	}
+	if user.CogName != "uagaewt1234" {
+		t.Errorf("failed asserting CogName, got %s", user.CogName)
+	}
+	if user.Role != storage.AuthRoleNone {
+		t.Errorf("failed asserting Role, got %s", user.Role)
+	}
 }
 
 func TestUserRepo_GetByUsername_NotFound(t *testing.T) {
 	test.SkipIfNotIntegrationTesting(t)
 	ctx := context.Background()
 	repo, err := setupUserRepo(ctx)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("expected error to be nil, got %v", err)
+	}
 	defer cleanUserRepo(repo)
 
 	insertUserDummyData(t, repo)
 
 	_, err = repo.GetByUsername(ctx, "some-other")
-	assert.Equal(t, true, errors.As(err, &storage.NotFound{}))
+	if !errors.As(err, &storage.NotFound{}) {
+		t.Fatal("expected error of type not found")
+	}
 }
 
 func TestUserRepo_Create(t *testing.T) {
@@ -86,7 +104,9 @@ func TestUserRepo_Create(t *testing.T) {
 	ctx := context.Background()
 
 	repo, err := setupUserRepo(ctx)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("expected error to be nil, got %v", err)
+	}
 	defer cleanUserRepo(repo)
 
 	newUser := storage.UserCreationDto{
@@ -99,14 +119,28 @@ func TestUserRepo_Create(t *testing.T) {
 	}
 
 	user, err := repo.Create(ctx, newUser)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("expected error to be nil, got %v", err)
+	}
 
-	assert.Equal(t, "mary@gmail.com", user.Email)
-	assert.Equal(t, storage.AuthRoleAdmin, user.Role)
-	assert.Equal(t, "whatever-username", user.CogUsername)
-	assert.Equal(t, "whatever-sub", user.CogSub)
-	assert.Equal(t, "whatever-name", user.CogName)
-	assert.Equal(t, false, user.Disabled)
+	if user.Email != "mary@gmail.com" {
+		t.Errorf("failed email assertion, got %s", user.Email)
+	}
+	if user.Role != storage.AuthRoleAdmin {
+		t.Errorf("failed role assertion, got %s", user.Role)
+	}
+	if user.CogUsername != "whatever-username" {
+		t.Errorf("failed CogUsername assertion, got %s", user.CogUsername)
+	}
+	if user.CogSub != "whatever-sub" {
+		t.Errorf("failed CogSub assertion, got %s", user.CogSub)
+	}
+	if user.CogName != "whatever-name" {
+		t.Errorf("failed CogName assertion, got %s", user.CogName)
+	}
+	if user.Disabled {
+		t.Errorf("failed disabled assertion, got %s", user.CogName)
+	}
 }
 
 func TestUserRepo_Create_Exists(t *testing.T) {
@@ -114,7 +148,9 @@ func TestUserRepo_Create_Exists(t *testing.T) {
 	ctx := context.Background()
 
 	repo, err := setupUserRepo(ctx)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("expected error to be nil, got %v", err)
+	}
 	defer cleanUserRepo(repo)
 
 	insertUserDummyData(t, repo)
@@ -129,5 +165,7 @@ func TestUserRepo_Create_Exists(t *testing.T) {
 	}
 
 	_, err = repo.Create(ctx, newUser)
-	assert.Equal(t, true, errors.Is(err, storage.ErrDuplicate))
+	if !errors.Is(err, storage.ErrDuplicate) {
+		t.Errorf("expected error duplicate, got %v", err)
+	}
 }
